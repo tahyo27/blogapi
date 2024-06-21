@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: practiceapi
+
+server:
+  port: 8072
