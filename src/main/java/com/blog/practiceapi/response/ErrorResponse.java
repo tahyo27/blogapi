@@ -1,4 +1,4 @@
-package com.blog.practiceapi.error;
+package com.blog.practiceapi.response;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;

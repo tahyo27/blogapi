@@ -1,17 +1,13 @@
 package com.blog.practiceapi.domain;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
 @Entity
 @Getter
 @NoArgsConstructor
 public class Post {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

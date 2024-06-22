@@ -5,6 +5,7 @@ import com.blog.practiceapi.repository.BlogPostRepository;
 import com.blog.practiceapi.request.PostCreate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -98,7 +99,7 @@ class BlogPostControllerTest {
     
     @Test
     @DisplayName("/posts/id 요청시 1개 조회 테스트")
-    void controller_get_post_with_id() throws Exception {
+    void controller_get_post_with_id_test() throws Exception {
         //given
         Post post = Post.builder()
                 .title("제목테스트")
@@ -116,6 +117,38 @@ class BlogPostControllerTest {
                 .andExpect(jsonPath("$.content").value("내용테스트"))
                 .andDo(MockMvcResultHandlers.print());
 
+    }
+
+    @Test
+    @DisplayName("/posts 모두 불러오기 테스트")
+    void controller_get_post_all_test() throws Exception {
+        //given
+        Post testPost1 = Post.builder()
+                .title("제목1")
+                .content("내용1")
+                .build();
+        blogPostRepository.save(testPost1);
+
+        Post testPost2 = Post.builder()
+                .title("제목2")
+                .content("내용2")
+                .build();
+        blogPostRepository.save(testPost2);
+
+        //expected
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", Matchers.is(2)))
+                .andExpect(jsonPath("$[0].id").value(testPost1.getId()))
+                .andExpect(jsonPath("$[0].title").value("제목1"))
+                .andExpect(jsonPath("$[0].content").value("내용1"))
+                .andExpect(jsonPath("$[1].id").value(testPost2.getId()))
+                .andExpect(jsonPath("$[1].title").value("제목2"))
+                .andExpect(jsonPath("$[1].content").value("내용2"))
+                .andDo(MockMvcResultHandlers.print());
     }
     
 }//end

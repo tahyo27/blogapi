@@ -2,11 +2,14 @@ package com.blog.practiceapi.controller;
 
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.request.PostCreate;
+import com.blog.practiceapi.response.PostResponse;
 import com.blog.practiceapi.service.BlogPostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Slf4j
@@ -21,11 +24,12 @@ public class BlogPostController {
         blogPostService.write(postRequest);
     }
     @GetMapping("/posts/{blogPostId}")
-    public Post getPost(@PathVariable(name = "blogPostId") Long blogPostId) {
+    public PostResponse getPost(@PathVariable(name = "blogPostId") Long blogPostId) {
         return blogPostService.get(blogPostId);
     }
-    /*
-    글전체 조회 (검색 + 페이징)
-    글 한개 조회
-     */
+
+    @GetMapping("/posts")
+    public List<PostResponse> getList() {
+        return blogPostService.getList();
+    }
 }

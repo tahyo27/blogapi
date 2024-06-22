@@ -1,7 +1,7 @@
 package com.blog.practiceapi.controller;
 
-import com.blog.practiceapi.error.ErrorResponse;
-import com.blog.practiceapi.error.ValidationError;
+import com.blog.practiceapi.response.ErrorResponse;
+import com.blog.practiceapi.response.ValidationError;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +20,10 @@ import java.util.Map;
 @ControllerAdvice
 public class ExceptionController {
 
+
+    @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseBody
     public String exceptionHandler(MethodArgumentNotValidException e) {
 
         Map<String, String> fieldErrors = new HashMap<>();

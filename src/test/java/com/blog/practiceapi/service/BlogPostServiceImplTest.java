@@ -8,11 +8,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+@AutoConfigureMockMvc
 @SpringBootTest
 class BlogPostServiceImplTest {
 
@@ -29,7 +33,7 @@ class BlogPostServiceImplTest {
 
 
     @Test
-    @DisplayName("블로그 포스트 저장 테스트")
+    @DisplayName("Json Request 클래스 블로그 포스트 저장 테스트")
     void save_post_service_test() {
         //give
         PostCreate postCreate = PostCreate.builder()
@@ -58,7 +62,7 @@ class BlogPostServiceImplTest {
         blogPostRepository.save(testPost);
 
         //when
-        Post post = blogPostService.get(testPost.getId());
+        Post post = blogPostRepository.findById(testPost.getId()).orElseThrow(() -> new IllegalStateException());
 
         //then
         assertNotNull(post);
@@ -76,11 +80,34 @@ class BlogPostServiceImplTest {
         blogPostRepository.save(testPost);
 
         //when
-        Post post = blogPostService.get(testPost.getId());
+        Post post = blogPostRepository.findById(testPost.getId()).orElseThrow(() -> new IllegalStateException());
 
         //then
         assertNotNull(post);
         assertThat(post.getTitle()).isEqualTo("제목");
         assertThat(post.getContent()).isEqualTo("내용");
+    }
+
+    @Test
+    @DisplayName("모든 포스트 불러오기")
+    void get_post_all() {
+        //given
+        blogPostRepository.saveAll(List.of(
+                Post.builder()
+                        .title("제목1")
+                        .content("내용1")
+                        .build(),
+                Post.builder()
+                        .title("제목2")
+                        .content("내용2")
+                        .build())
+        );
+
+        //when
+        List<Post> postList = blogPostRepository.findAll();
+
+        //then
+
+        Assertions.assertEquals(2L, postList.size());
     }
 }
