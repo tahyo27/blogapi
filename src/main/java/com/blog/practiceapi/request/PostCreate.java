@@ -1,19 +1,26 @@
 package com.blog.practiceapi.request;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
-@Setter
 @Getter
 @ToString
 public class PostCreate {
 
-    @NotBlank //검증
-    String title;
-    
     @NotBlank
-    String content;
+    private final String title;
+
+    @NotBlank
+    private final String content;
+
+    @Builder
+    @Jacksonized
+    public PostCreate(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.HashMap;
@@ -21,6 +22,7 @@ public class ExceptionController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseBody
     public String exceptionHandler(MethodArgumentNotValidException e) {
 
         Map<String, String> fieldErrors = new HashMap<>();
@@ -31,7 +33,13 @@ public class ExceptionController {
         });
 
         ValidationError validationError = new ValidationError(fieldErrors);
-        ErrorResponse errorResponse = new ErrorResponse("400", "검증 오류", validationError);
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code("400")
+                .msg("validation error")
+                .validationError(validationError)
+                .build();
+
         String jsonString = null;
 
         try {

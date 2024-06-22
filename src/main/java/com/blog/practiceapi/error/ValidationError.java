@@ -10,9 +10,9 @@ import java.util.Map;
 public class ValidationError {
 
     @JsonProperty("title")
-    private String title;
+    private final String title;
     @JsonProperty("content")
-    private String content;
+    private final String content;
 
     public ValidationError(Map<String, String> map) {
         this.title = map.get("title");
