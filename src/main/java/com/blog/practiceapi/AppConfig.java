@@ -1,8 +1,8 @@
 package com.blog.practiceapi;
 
-import com.blog.practiceapi.repository.PostRepository;
-import com.blog.practiceapi.service.PostService;
-import com.blog.practiceapi.service.PostServiceImpl;
+import com.blog.practiceapi.repository.BlogPostRepository;
+import com.blog.practiceapi.service.BlogPostService;
+import com.blog.practiceapi.service.BlogPostServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,10 +11,10 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class AppConfig {
 
-    private final PostRepository postRepository;
+    private final BlogPostRepository blogPostRepository;
 
     @Bean
-    public PostService postService(PostRepository postRepository) {
-        return new PostServiceImpl(postRepository);
+    public BlogPostService postService(BlogPostRepository blogPostRepository) {
+        return new BlogPostServiceImpl(blogPostRepository);
     }
 }

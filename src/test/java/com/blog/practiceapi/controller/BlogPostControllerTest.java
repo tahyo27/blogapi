@@ -1,8 +1,9 @@
 package com.blog.practiceapi.controller;
 
 import com.blog.practiceapi.domain.Post;
-import com.blog.practiceapi.repository.PostRepository;
+import com.blog.practiceapi.repository.BlogPostRepository;
 import com.blog.practiceapi.request.PostCreate;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,22 +21,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.assertj.core.api.Assertions.*;
 @AutoConfigureMockMvc
 @SpringBootTest
-class PostControllerTest {
+class BlogPostControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private PostRepository postRepository;
+    private BlogPostRepository blogPostRepository;
 
     @BeforeEach
     void clean() {
-        postRepository.deleteAll();
+        blogPostRepository.deleteAll();
     }
 
     @Test
     @DisplayName("/posts 요청시 출력 테스트")
-    void test() throws Exception {
+    void controller_get_post_test() throws Exception {
         //geven
         PostCreate request = PostCreate.builder()
                 .title("제목입니다")
@@ -56,7 +57,7 @@ class PostControllerTest {
     
     @Test
     @DisplayName("/posts 요청시 title, content 공백 및 null 테스트")
-    void test2() throws Exception {
+    void controller_get_exception_test() throws Exception {
         //expect
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -72,7 +73,7 @@ class PostControllerTest {
 
     @Test
     @DisplayName("/posts 요청시 DB에 값 저장")
-    void test3() throws Exception {
+    void controller_post_save_db_test() throws Exception {
         //given
         PostCreate request = PostCreate.builder()
                 .title("제목입니다")
@@ -88,10 +89,33 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
         //then
-        Assertions.assertEquals(1L, postRepository.count());
-        Post post = postRepository.findAll().get(0);
+        Assertions.assertEquals(1L, blogPostRepository.count());
+        Post post = blogPostRepository.findAll().get(0);
 
         assertThat(post.getTitle()).isEqualTo("제목입니다");
         assertThat(post.getContent()).isEqualTo("내용입니다");
     }
-}
+    
+    @Test
+    @DisplayName("/posts/id 요청시 1개 조회 테스트")
+    void controller_get_post_with_id() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("제목테스트")
+                .content("내용테스트")
+                .build();
+
+        blogPostRepository.save(post);
+
+        //expected
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts/{blogPostId}", post.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(post.getId()))
+                .andExpect(jsonPath("$.title").value("제목테스트"))
+                .andExpect(jsonPath("$.content").value("내용테스트"))
+                .andDo(MockMvcResultHandlers.print());
+
+    }
+    
+}//end
