@@ -5,6 +5,7 @@ import com.blog.practiceapi.repository.BlogPostRepository;
 import com.blog.practiceapi.request.PostCreate;
 import com.blog.practiceapi.service.BlogPostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,15 +18,20 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-@AutoConfigureMockMvc
+
 @SpringBootTest
+@AutoConfigureMockMvc
 class BlogPostControllerTest {
+
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,10 +45,13 @@ class BlogPostControllerTest {
     @BeforeEach
     void clean() {
         blogPostRepository.deleteAll();
+        em.createNativeQuery("ALTER TABLE post ALTER COLUMN id RESTART WITH 1")
+                .executeUpdate();
     }
 
     @Test
     @DisplayName("/posts 요청시 출력 테스트")
+    @Transactional
     void controller_get_post_test() throws Exception {
         //geven
         PostCreate request = PostCreate.builder()
@@ -64,6 +73,7 @@ class BlogPostControllerTest {
     
     @Test
     @DisplayName("/posts 요청시 title, content 공백 및 null 테스트")
+    @Transactional
     void controller_get_exception_test() throws Exception {
         //expect
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
@@ -80,6 +90,7 @@ class BlogPostControllerTest {
 
     @Test
     @DisplayName("/posts 요청시 DB에 값 저장")
+    @Transactional
     void controller_post_save_db_test() throws Exception {
         //given
         PostCreate request = PostCreate.builder()
@@ -105,6 +116,7 @@ class BlogPostControllerTest {
     
     @Test
     @DisplayName("/posts/id 요청시 1개 조회 테스트")
+    @Transactional
     void controller_get_post_with_id_test() throws Exception {
         //given
         Post post = Post.builder()
@@ -127,6 +139,7 @@ class BlogPostControllerTest {
 
     @Test
     @DisplayName("/posts 페이징 테스트")
+    @Transactional
     void controller_get_post_paging_test() throws Exception {
         //given
         List<Post> savePosts = IntStream.range(1, 31)
@@ -138,8 +151,11 @@ class BlogPostControllerTest {
 
         //expected
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=1&sort=id,desc")
-                .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts")
+                                .param("page", "1")
+                                .param("size", "5")
+                                .param("sort", "id,desc")
+                                .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", Matchers.is(5)))

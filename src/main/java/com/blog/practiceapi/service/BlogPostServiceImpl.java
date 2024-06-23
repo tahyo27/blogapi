@@ -13,10 +13,12 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+
 @RequiredArgsConstructor
 public class BlogPostServiceImpl implements BlogPostService {
 
     private final BlogPostRepository blogPostRepository;
+
     @Override
     public void write(PostCreate postCreate) {
         Post post = Post.builder()
