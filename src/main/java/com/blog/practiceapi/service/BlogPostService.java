@@ -1,8 +1,7 @@
 package com.blog.practiceapi.service;
 
-import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.request.PostCreate;
-import com.blog.practiceapi.response.PostResponse;
+import com.blog.practiceapi.response.BlogPostResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -11,7 +10,7 @@ public interface BlogPostService {
 
     public void write(PostCreate postCreate);
 
-    public PostResponse get(Long id);
+    public BlogPostResponse get(Long id);
 
-    public List<PostResponse> getList(Pageable pageable);
+    public List<BlogPostResponse> getList(Pageable pageable);
 }

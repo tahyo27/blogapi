@@ -1,14 +1,12 @@
 package com.blog.practiceapi.controller;
 
-import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.request.PostCreate;
-import com.blog.practiceapi.response.PostResponse;
+import com.blog.practiceapi.response.BlogPostResponse;
 import com.blog.practiceapi.service.BlogPostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,12 +24,12 @@ public class BlogPostController {
         blogPostService.write(postRequest);
     }
     @GetMapping("/posts/{blogPostId}")
-    public PostResponse getPost(@PathVariable(name = "blogPostId") Long blogPostId) {
+    public BlogPostResponse getPost(@PathVariable(name = "blogPostId") Long blogPostId) {
         return blogPostService.get(blogPostId);
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getList(Pageable pageable) {
+    public List<BlogPostResponse> getList(Pageable pageable) {
 
         return blogPostService.getList(pageable);
     }

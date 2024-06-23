@@ -3,14 +3,11 @@ package com.blog.practiceapi.service;
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.repository.BlogPostRepository;
 import com.blog.practiceapi.request.PostCreate;
-import com.blog.practiceapi.response.PostResponse;
+import com.blog.practiceapi.response.BlogPostResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
@@ -30,11 +27,11 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public PostResponse get(Long id) {
+    public BlogPostResponse get(Long id) {
         Post post = blogPostRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않음"));
 
-        return PostResponse.builder()
+        return BlogPostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
@@ -42,9 +39,9 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public List<PostResponse> getList(Pageable pageable) {
-        return blogPostRepository.findAll(pageable).stream().map
-                (items -> new PostResponse(items))
+    public List<BlogPostResponse> getList(Pageable pageable) {
+        return blogPostRepository.getPagingList(1).stream().map
+                (items -> new BlogPostResponse(items))
                 .collect(Collectors.toList());
     }
 }

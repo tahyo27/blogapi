@@ -3,7 +3,7 @@ package com.blog.practiceapi.service;
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.repository.BlogPostRepository;
 import com.blog.practiceapi.request.PostCreate;
-import com.blog.practiceapi.response.PostResponse;
+import com.blog.practiceapi.response.BlogPostResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -95,7 +94,7 @@ class BlogPostServiceImplTest {
     }
 
     @Test
-    @DisplayName("페이징 1페이지 조회")
+    @DisplayName("페이징 페이지 조회")
     void get_post_paging_test() {
         //given
         List<Post> savePosts = IntStream.range(1, 31)
@@ -106,13 +105,13 @@ class BlogPostServiceImplTest {
        blogPostRepository.saveAll(savePosts);
 
         //when
-        Pageable pageable = PageRequest.of(0, 5, Sort.by("id").descending());
-        List<PostResponse> posts = blogPostService.getList(pageable);
+        Pageable pageable = PageRequest.of(0, 5);
+        List<BlogPostResponse> posts = blogPostService.getList(pageable);
 
         //then
 
-        Assertions.assertEquals(5L, posts.size());
+        Assertions.assertEquals(10L, posts.size());
         Assertions.assertEquals("제목30", posts.get(0).getTitle());
-        Assertions.assertEquals("제목26", posts.get(4).getTitle());
+        Assertions.assertEquals("제목20", posts.get(4).getTitle());
     }
 }
