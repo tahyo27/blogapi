@@ -7,6 +7,8 @@ import com.blog.practiceapi.service.BlogPostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +31,8 @@ public class BlogPostController {
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getList() {
-        return blogPostService.getList();
+    public List<PostResponse> getList(Pageable pageable) {
+
+        return blogPostService.getList(pageable);
     }
 }

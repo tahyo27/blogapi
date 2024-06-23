@@ -3,6 +3,7 @@ package com.blog.practiceapi.service;
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.repository.BlogPostRepository;
 import com.blog.practiceapi.request.PostCreate;
+import com.blog.practiceapi.response.PostResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,8 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -89,25 +95,24 @@ class BlogPostServiceImplTest {
     }
 
     @Test
-    @DisplayName("모든 포스트 불러오기")
-    void get_post_all() {
+    @DisplayName("페이징 1페이지 조회")
+    void get_post_paging_test() {
         //given
-        blogPostRepository.saveAll(List.of(
-                Post.builder()
-                        .title("제목1")
-                        .content("내용1")
-                        .build(),
-                Post.builder()
-                        .title("제목2")
-                        .content("내용2")
-                        .build())
-        );
+        List<Post> savePosts = IntStream.range(1, 31)
+                        .mapToObj(items -> Post.builder()
+                                .title("제목" + items)
+                                .content("내용" + items)
+                                .build()).toList();
+       blogPostRepository.saveAll(savePosts);
 
         //when
-        List<Post> postList = blogPostRepository.findAll();
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("id").descending());
+        List<PostResponse> posts = blogPostService.getList(pageable);
 
         //then
 
-        Assertions.assertEquals(2L, postList.size());
+        Assertions.assertEquals(5L, posts.size());
+        Assertions.assertEquals("제목30", posts.get(0).getTitle());
+        Assertions.assertEquals("제목26", posts.get(4).getTitle());
     }
 }

@@ -5,6 +5,9 @@ import com.blog.practiceapi.repository.BlogPostRepository;
 import com.blog.practiceapi.request.PostCreate;
 import com.blog.practiceapi.response.PostResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.stream.Collector;
@@ -37,8 +40,8 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public List<PostResponse> getList() {
-        return blogPostRepository.findAll().stream().map
+    public List<PostResponse> getList(Pageable pageable) {
+        return blogPostRepository.findAll(pageable).stream().map
                 (items -> new PostResponse(items))
                 .collect(Collectors.toList());
     }

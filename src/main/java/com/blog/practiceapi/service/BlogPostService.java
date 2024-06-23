@@ -3,6 +3,7 @@ package com.blog.practiceapi.service;
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.request.PostCreate;
 import com.blog.practiceapi.response.PostResponse;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -12,5 +13,5 @@ public interface BlogPostService {
 
     public PostResponse get(Long id);
 
-    public List<PostResponse> getList();
+    public List<PostResponse> getList(Pageable pageable);
 }
