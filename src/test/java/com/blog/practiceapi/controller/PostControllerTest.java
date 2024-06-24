@@ -3,6 +3,7 @@ package com.blog.practiceapi.controller;
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreatePost;
+import com.blog.practiceapi.request.EditPost;
 import com.blog.practiceapi.service.PostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -62,13 +65,13 @@ class PostControllerTest {
         String json = (new ObjectMapper()).writeValueAsString(request);
         System.out.println(json);
         //expect
-        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+        mockMvc.perform(post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().string(""))
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(print());
     }
     
     @Test
@@ -76,7 +79,7 @@ class PostControllerTest {
     @Transactional
     void controller_get_exception_test() throws Exception {
         //expect
-        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+        mockMvc.perform(post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\": null, \"content\": \"\"}")
                 )
@@ -85,7 +88,7 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.message").value("validation error"))
                 .andExpect(jsonPath("$.validation.title").value("must not be blank"))
                 .andExpect(jsonPath("$.validation.content").value("must not be blank"))
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(print());
     }
 
     @Test
@@ -100,12 +103,12 @@ class PostControllerTest {
 
         String json = (new ObjectMapper()).writeValueAsString(request);
         //when
-        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+        mockMvc.perform(post("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                 )
                 .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(print());
         //then
         Assertions.assertEquals(1L, postRepository.count());
         Post post = postRepository.findAll().get(0);
@@ -127,13 +130,13 @@ class PostControllerTest {
         postRepository.save(post);
 
         //expected
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts/{blogPostId}", post.getId())
+        mockMvc.perform(get("/posts/{blogPostId}", post.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(post.getId()))
                 .andExpect(jsonPath("$.title").value("제목테스트"))
                 .andExpect(jsonPath("$.content").value("내용테스트"))
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(print());
 
     }
 
@@ -151,7 +154,7 @@ class PostControllerTest {
 
         //expected
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts")
+        mockMvc.perform(get("/posts")
                                 .param("page", "1")
                                 .param("size", "10")
                                 .param("sort", "id,desc")
@@ -162,7 +165,7 @@ class PostControllerTest {
                 .andExpect(jsonPath("$[0].id").value(30))
                 .andExpect(jsonPath("$[0].title").value("제목30"))
                 .andExpect(jsonPath("$[0].content").value("내용30"))
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(print());
     }
     @Test
     @DisplayName("/posts 페이지 기본값 테스트")
@@ -178,7 +181,7 @@ class PostControllerTest {
 
         //expected
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts")
+        mockMvc.perform(get("/posts")
                         .param("page", "1")
                         .param("size", "2000")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -189,7 +192,34 @@ class PostControllerTest {
                 .andExpect(jsonPath("$[0].id").value(30))
                 .andExpect(jsonPath("$[0].title").value("제목30"))
                 .andExpect(jsonPath("$[0].content").value("내용30"))
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("/posts 글 제목 업데이트 테스트")
+    @Transactional
+    void controller_edit_post_title_test() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("제목1")
+                .content("내용1")
+                .build();
+        postRepository.save(post);
+
+        EditPost editedPost = EditPost.builder()
+                .title("목제1")
+                .content(null)
+                .build();
+
+        String json = (new ObjectMapper()).writeValueAsString(editedPost);
+        //expected
+
+        mockMvc.perform(patch("/posts") //patch post/{postId}
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
     }
     
 }//end

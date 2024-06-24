@@ -1,6 +1,7 @@
 package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.domain.Post;
+import com.blog.practiceapi.domain.PostEditor;
 import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.request.EditPost;
@@ -54,9 +55,18 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void editPost(Long id, EditPost editPost) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다"));
-        post.changePost(editPost.getTitle(), editPost.getContent());
-        log.info("post={}", post);
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글"));
+
+        PostEditor.PostEditorBuilder builder = post.toPostEditor();
+        log.info("builder={}", builder);
+        PostEditor postEditor = builder
+                .title(editPost.getTitle())
+                .content(editPost.getContent())
+                .build();
+        log.info("postEditor={}", postEditor);
+
+        post.edit(postEditor);
+        log.info("changed_post={}", post);
     }
 
 

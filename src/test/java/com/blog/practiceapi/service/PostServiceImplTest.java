@@ -116,8 +116,8 @@ class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("게시글 타이틀 수정")
-    void post_edit_title() {
+    @DisplayName("게시글 제목 수정")
+    void post_edit_title_test() {
         //given
         Post post = Post.builder()
                 .title("제목1")
@@ -125,19 +125,42 @@ class PostServiceImplTest {
                 .build();
         postRepository.save(post);
 
-        EditPost editPost = EditPost.builder()
+        EditPost editedPost = EditPost.builder()
                 .title("목제1")
+                .build();
+
+        //when
+        postService.editPost(post.getId(), editedPost);
+
+        //then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않음" + post.getId()));
+
+        Assertions.assertEquals(changedPost.getTitle(), editedPost.getTitle());
+    }
+
+    @Test
+    @DisplayName("게시글 내용 수정")
+    void post_edit_content_test() {
+        //given
+        Post post = Post.builder()
+                .title("제목1")
+                .content("내용1")
+                .build();
+        postRepository.save(post);
+
+        EditPost editedPost = EditPost.builder()
+                .title(null)
                 .content("용내1")
                 .build();
 
         //when
-        postService.editPost(post.getId(), editPost);
+        postService.editPost(post.getId(), editedPost);
 
         //then
-        Post getPost = postRepository.findById(post.getId())
+        Post changedPost = postRepository.findById(post.getId())
                 .orElseThrow(() -> new RuntimeException("글이 존재하지 않음" + post.getId()));
 
-        Assertions.assertEquals(getPost.getTitle(), editPost.getTitle());
-
+        Assertions.assertEquals(changedPost.getContent(), editedPost.getContent());
     }
 }
