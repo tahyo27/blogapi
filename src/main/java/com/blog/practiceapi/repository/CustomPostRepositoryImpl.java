@@ -17,7 +17,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
     public List<Post> getPagingList(SearchPagingPost search) {
         return jpaQueryFactory.selectFrom(QPost.post)
                 .limit(search.getSize())
-                .offset((long)(search.getPage() - 1) * search.getSize())
+                .offset(search.getOffset())
                 .orderBy(QPost.post.id.desc())
                 .fetch();
     }

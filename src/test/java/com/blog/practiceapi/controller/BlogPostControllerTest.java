@@ -153,9 +153,36 @@ class BlogPostControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/posts")
                                 .param("page", "1")
-                                .param("size", "5")
+                                .param("size", "10")
                                 .param("sort", "id,desc")
                                 .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", Matchers.is(10)))
+                .andExpect(jsonPath("$[0].id").value(30))
+                .andExpect(jsonPath("$[0].title").value("제목30"))
+                .andExpect(jsonPath("$[0].content").value("내용30"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+    @Test
+    @DisplayName("/posts 페이지 기본값 테스트")
+    @Transactional
+    void controller_get_post_paging_default_test() throws Exception {
+        //given
+        List<Post> savePosts = IntStream.range(1, 31)
+                .mapToObj(items -> Post.builder()
+                        .title("제목" + items)
+                        .content("내용" + items)
+                        .build()).toList();
+        blogPostRepository.saveAll(savePosts);
+
+        //expected
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts")
+                        .param("page", "1")
+                        .param("size", "2000")
+                        .contentType(MediaType.APPLICATION_JSON)
+
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", Matchers.is(10)))

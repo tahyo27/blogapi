@@ -105,9 +105,8 @@ class BlogPostServiceImplTest {
        blogPostRepository.saveAll(savePosts);
 
         //when
-        SearchPagingPost search = new SearchPagingPost();
-        search.setPage(1);
-        search.setSize(10);
+        SearchPagingPost search = SearchPagingPost.builder()
+                .build();
         List<BlogPostResponse> posts = blogPostService.getList(search);
 
         //then
