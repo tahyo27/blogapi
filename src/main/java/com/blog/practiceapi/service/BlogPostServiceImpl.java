@@ -2,7 +2,8 @@ package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.repository.BlogPostRepository;
-import com.blog.practiceapi.request.PostCreate;
+import com.blog.practiceapi.request.CreatePost;
+import com.blog.practiceapi.request.SearchPagingPost;
 import com.blog.practiceapi.response.BlogPostResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -17,10 +18,10 @@ public class BlogPostServiceImpl implements BlogPostService {
     private final BlogPostRepository blogPostRepository;
 
     @Override
-    public void write(PostCreate postCreate) {
+    public void write(CreatePost createPost) {
         Post post = Post.builder()
-                .title(postCreate.getTitle())
-                .content(postCreate.getContent())
+                .title(createPost.getTitle())
+                .content(createPost.getContent())
                 .build();
 
         blogPostRepository.save(post);
@@ -39,8 +40,8 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public List<BlogPostResponse> getList(Pageable pageable) {
-        return blogPostRepository.getPagingList(1).stream().map
+    public List<BlogPostResponse> getList(SearchPagingPost search) {
+        return blogPostRepository.getPagingList(search).stream().map
                 (items -> new BlogPostResponse(items))
                 .collect(Collectors.toList());
     }

@@ -2,7 +2,8 @@ package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.repository.BlogPostRepository;
-import com.blog.practiceapi.request.PostCreate;
+import com.blog.practiceapi.request.CreatePost;
+import com.blog.practiceapi.request.SearchPagingPost;
 import com.blog.practiceapi.response.BlogPostResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -41,13 +41,13 @@ class BlogPostServiceImplTest {
     @DisplayName("Json Request 클래스 블로그 포스트 저장 테스트")
     void save_post_service_test() {
         //give
-        PostCreate postCreate = PostCreate.builder()
+        CreatePost createPost = CreatePost.builder()
                 .title("제목")
                 .content("내용")
                 .build();
 
         //when
-        blogPostService.write(postCreate);
+        blogPostService.write(createPost);
 
         //then
         Assertions.assertEquals(1L, blogPostRepository.count());
@@ -105,13 +105,15 @@ class BlogPostServiceImplTest {
        blogPostRepository.saveAll(savePosts);
 
         //when
-        Pageable pageable = PageRequest.of(0, 5);
-        List<BlogPostResponse> posts = blogPostService.getList(pageable);
+        SearchPagingPost search = new SearchPagingPost();
+        search.setPage(1);
+        search.setSize(10);
+        List<BlogPostResponse> posts = blogPostService.getList(search);
 
         //then
 
         Assertions.assertEquals(10L, posts.size());
         Assertions.assertEquals("제목30", posts.get(0).getTitle());
-        Assertions.assertEquals("제목20", posts.get(4).getTitle());
+        Assertions.assertEquals("제목21", posts.get(9).getTitle());
     }
 }

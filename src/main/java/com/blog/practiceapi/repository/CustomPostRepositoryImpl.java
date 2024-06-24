@@ -2,6 +2,7 @@ package com.blog.practiceapi.repository;
 
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.domain.QPost;
+import com.blog.practiceapi.request.SearchPagingPost;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -13,10 +14,10 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Post> getPagingList(int page) {
+    public List<Post> getPagingList(SearchPagingPost search) {
         return jpaQueryFactory.selectFrom(QPost.post)
-                .limit(10)
-                .offset((long)(page - 1) * 10)
+                .limit(search.getSize())
+                .offset((long)(search.getPage() - 1) * search.getSize())
                 .orderBy(QPost.post.id.desc())
                 .fetch();
     }

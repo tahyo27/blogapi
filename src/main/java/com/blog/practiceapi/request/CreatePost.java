@@ -8,7 +8,7 @@ import lombok.extern.jackson.Jacksonized;
 
 @Getter
 @ToString
-public class PostCreate {
+public class CreatePost {
 
     @NotBlank
     private final String title;
@@ -18,7 +18,7 @@ public class PostCreate {
 
     @Builder
     @Jacksonized
-    public PostCreate(String title, String content) {
+    public CreatePost(String title, String content) {
         this.title = title;
         this.content = content;
     }

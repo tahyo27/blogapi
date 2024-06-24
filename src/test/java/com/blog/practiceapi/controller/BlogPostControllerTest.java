@@ -2,7 +2,7 @@ package com.blog.practiceapi.controller;
 
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.repository.BlogPostRepository;
-import com.blog.practiceapi.request.PostCreate;
+import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.service.BlogPostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -54,7 +54,7 @@ class BlogPostControllerTest {
     @Transactional
     void controller_get_post_test() throws Exception {
         //geven
-        PostCreate request = PostCreate.builder()
+        CreatePost request = CreatePost.builder()
                 .title("제목입니다")
                 .content("내용입니다")
                 .build();
@@ -93,7 +93,7 @@ class BlogPostControllerTest {
     @Transactional
     void controller_post_save_db_test() throws Exception {
         //given
-        PostCreate request = PostCreate.builder()
+        CreatePost request = CreatePost.builder()
                 .title("제목입니다")
                 .content("내용입니다")
                 .build();

@@ -1,6 +1,7 @@
 package com.blog.practiceapi.controller;
 
-import com.blog.practiceapi.request.PostCreate;
+import com.blog.practiceapi.request.CreatePost;
+import com.blog.practiceapi.request.SearchPagingPost;
 import com.blog.practiceapi.response.BlogPostResponse;
 import com.blog.practiceapi.service.BlogPostService;
 import jakarta.validation.Valid;
@@ -20,7 +21,7 @@ public class BlogPostController {
     private final BlogPostService blogPostService;
 
     @PostMapping("/posts")
-    public void writePost(@RequestBody @Valid PostCreate postRequest) throws Exception {
+    public void writePost(@RequestBody @Valid CreatePost postRequest) throws Exception {
         blogPostService.write(postRequest);
     }
     @GetMapping("/posts/{blogPostId}")
@@ -29,8 +30,8 @@ public class BlogPostController {
     }
 
     @GetMapping("/posts")
-    public List<BlogPostResponse> getList(Pageable pageable) {
+    public List<BlogPostResponse> getList(SearchPagingPost searchPagingPost) {
 
-        return blogPostService.getList(pageable);
+        return blogPostService.getList(searchPagingPost);
     }
 }
