@@ -1,8 +1,8 @@
 package com.blog.practiceapi;
 
-import com.blog.practiceapi.repository.BlogPostRepository;
-import com.blog.practiceapi.service.BlogPostService;
-import com.blog.practiceapi.service.BlogPostServiceImpl;
+import com.blog.practiceapi.repository.PostRepository;
+import com.blog.practiceapi.service.PostService;
+import com.blog.practiceapi.service.PostServiceImpl;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,7 +24,7 @@ public class AppConfig {
     }
 
     @Bean
-    public BlogPostService postService(BlogPostRepository blogPostRepository) {
-        return new BlogPostServiceImpl(blogPostRepository);
+    public PostService postService(PostRepository postRepository) {
+        return new PostServiceImpl(postRepository);
     }
 }

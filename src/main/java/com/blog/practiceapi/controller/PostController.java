@@ -2,12 +2,11 @@ package com.blog.practiceapi.controller;
 
 import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.request.SearchPagingPost;
-import com.blog.practiceapi.response.BlogPostResponse;
-import com.blog.practiceapi.service.BlogPostService;
+import com.blog.practiceapi.response.PostResponse;
+import com.blog.practiceapi.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,22 +15,22 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class BlogPostController {
+public class PostController {
 
-    private final BlogPostService blogPostService;
+    private final PostService postService;
 
     @PostMapping("/posts")
     public void writePost(@RequestBody @Valid CreatePost postRequest) throws Exception {
-        blogPostService.write(postRequest);
+        postService.write(postRequest);
     }
     @GetMapping("/posts/{blogPostId}")
-    public BlogPostResponse getPost(@PathVariable(name = "blogPostId") Long blogPostId) {
-        return blogPostService.get(blogPostId);
+    public PostResponse getPost(@PathVariable(name = "blogPostId") Long blogPostId) {
+        return postService.get(blogPostId);
     }
 
     @GetMapping("/posts")
-    public List<BlogPostResponse> getList(SearchPagingPost searchPagingPost) {
+    public List<PostResponse> getList(SearchPagingPost searchPagingPost) {
 
-        return blogPostService.getList(searchPagingPost);
+        return postService.getList(searchPagingPost);
     }
 }

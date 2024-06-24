@@ -1,9 +1,9 @@
 package com.blog.practiceapi.controller;
 
 import com.blog.practiceapi.domain.Post;
-import com.blog.practiceapi.repository.BlogPostRepository;
+import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreatePost;
-import com.blog.practiceapi.service.BlogPostService;
+import com.blog.practiceapi.service.PostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import org.hamcrest.Matchers;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class BlogPostControllerTest {
+class PostControllerTest {
 
     @Autowired
     private EntityManager em;
@@ -37,14 +37,14 @@ class BlogPostControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private BlogPostService blogPostService;
+    private PostService postService;
 
     @Autowired
-    private BlogPostRepository blogPostRepository;
+    private PostRepository postRepository;
 
     @BeforeEach
     void clean() {
-        blogPostRepository.deleteAll();
+        postRepository.deleteAll();
         em.createNativeQuery("ALTER TABLE post ALTER COLUMN id RESTART WITH 1")
                 .executeUpdate();
     }
@@ -107,8 +107,8 @@ class BlogPostControllerTest {
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
         //then
-        Assertions.assertEquals(1L, blogPostRepository.count());
-        Post post = blogPostRepository.findAll().get(0);
+        Assertions.assertEquals(1L, postRepository.count());
+        Post post = postRepository.findAll().get(0);
 
         assertThat(post.getTitle()).isEqualTo("제목입니다");
         assertThat(post.getContent()).isEqualTo("내용입니다");
@@ -124,7 +124,7 @@ class BlogPostControllerTest {
                 .content("내용테스트")
                 .build();
 
-        blogPostRepository.save(post);
+        postRepository.save(post);
 
         //expected
         mockMvc.perform(MockMvcRequestBuilders.get("/posts/{blogPostId}", post.getId())
@@ -147,7 +147,7 @@ class BlogPostControllerTest {
                         .title("제목" + items)
                         .content("내용" + items)
                         .build()).toList();
-        blogPostRepository.saveAll(savePosts);
+        postRepository.saveAll(savePosts);
 
         //expected
 
@@ -174,7 +174,7 @@ class BlogPostControllerTest {
                         .title("제목" + items)
                         .content("내용" + items)
                         .build()).toList();
-        blogPostRepository.saveAll(savePosts);
+        postRepository.saveAll(savePosts);
 
         //expected
 

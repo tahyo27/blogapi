@@ -1,10 +1,11 @@
 package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.domain.Post;
-import com.blog.practiceapi.repository.BlogPostRepository;
+import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreatePost;
+import com.blog.practiceapi.request.EditPost;
 import com.blog.practiceapi.request.SearchPagingPost;
-import com.blog.practiceapi.response.BlogPostResponse;
+import com.blog.practiceapi.response.PostResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -23,17 +22,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-class BlogPostServiceImplTest {
+class PostServiceImplTest {
 
     @Autowired
-    private BlogPostService blogPostService;
+    private PostService postService;
 
     @Autowired
-    private BlogPostRepository blogPostRepository;
+    private PostRepository postRepository;
 
     @BeforeEach
     void clean() {
-        blogPostRepository.deleteAll();
+        postRepository.deleteAll();
     }
 
 
@@ -47,11 +46,11 @@ class BlogPostServiceImplTest {
                 .build();
 
         //when
-        blogPostService.write(createPost);
+        postService.write(createPost);
 
         //then
-        Assertions.assertEquals(1L, blogPostRepository.count());
-        Post post = blogPostRepository.findAll().get(0);
+        Assertions.assertEquals(1L, postRepository.count());
+        Post post = postRepository.findAll().get(0);
         assertThat(post.getTitle()).isEqualTo("제목");
         assertThat(post.getContent()).isEqualTo("내용");
     }
@@ -64,14 +63,14 @@ class BlogPostServiceImplTest {
                 .title("제목")
                 .content("내용")
                 .build();
-        blogPostRepository.save(testPost);
+        postRepository.save(testPost);
 
         //when
-        Post post = blogPostRepository.findById(testPost.getId()).orElseThrow(() -> new IllegalStateException());
+        Post post = postRepository.findById(testPost.getId()).orElseThrow(() -> new IllegalStateException());
 
         //then
         assertNotNull(post);
-        assertEquals(1L, blogPostRepository.count());
+        assertEquals(1L, postRepository.count());
     }
 
     @Test
@@ -82,10 +81,10 @@ class BlogPostServiceImplTest {
                 .title("제목")
                 .content("내용")
                 .build();
-        blogPostRepository.save(testPost);
+        postRepository.save(testPost);
 
         //when
-        Post post = blogPostRepository.findById(testPost.getId()).orElseThrow(() -> new IllegalStateException());
+        Post post = postRepository.findById(testPost.getId()).orElseThrow(() -> new IllegalStateException());
 
         //then
         assertNotNull(post);
@@ -102,17 +101,43 @@ class BlogPostServiceImplTest {
                                 .title("제목" + items)
                                 .content("내용" + items)
                                 .build()).toList();
-       blogPostRepository.saveAll(savePosts);
+       postRepository.saveAll(savePosts);
 
         //when
         SearchPagingPost search = SearchPagingPost.builder()
                 .build();
-        List<BlogPostResponse> posts = blogPostService.getList(search);
+        List<PostResponse> posts = postService.getList(search);
 
         //then
 
         Assertions.assertEquals(10L, posts.size());
         Assertions.assertEquals("제목30", posts.get(0).getTitle());
         Assertions.assertEquals("제목21", posts.get(9).getTitle());
+    }
+
+    @Test
+    @DisplayName("게시글 타이틀 수정")
+    void post_edit_title() {
+        //given
+        Post post = Post.builder()
+                .title("제목1")
+                .content("내용1")
+                .build();
+        postRepository.save(post);
+
+        EditPost editPost = EditPost.builder()
+                .title("목제1")
+                .content("용내1")
+                .build();
+
+        //when
+        postService.editPost(post.getId(), editPost);
+
+        //then
+        Post getPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않음" + post.getId()));
+
+        Assertions.assertEquals(getPost.getTitle(), editPost.getTitle());
+
     }
 }
