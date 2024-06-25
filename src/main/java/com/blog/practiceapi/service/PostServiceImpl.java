@@ -2,6 +2,7 @@ package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.domain.PostEditor;
+import com.blog.practiceapi.exception.PostNotFound;
 import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.request.EditPost;
@@ -34,7 +35,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse get(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않음"));
+                .orElseThrow(PostNotFound::new);
 
         return PostResponse.builder()
                 .id(post.getId())
@@ -46,7 +47,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostResponse> getList(SearchPagingPost search) {
         return postRepository.getPagingList(search).stream().map
-                (items -> new PostResponse(items))
+                (PostResponse::new)
                 .collect(Collectors.toList());
     }
 
@@ -55,7 +56,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void editPost(Long id, EditPost editPost) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글"));
+                .orElseThrow(PostNotFound::new);
 
         PostEditor.PostEditorBuilder builder = post.toPostEditor();
         log.info("builder={}", builder);
@@ -72,7 +73,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(PostNotFound::new);
         postRepository.delete(post);
     }
 

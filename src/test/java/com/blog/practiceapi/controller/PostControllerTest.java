@@ -2,6 +2,7 @@ package com.blog.practiceapi.controller;
 
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.domain.PostEditor;
+import com.blog.practiceapi.exception.PostNotFound;
 import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.request.EditPost;
@@ -256,5 +257,7 @@ class PostControllerTest {
 
         Assertions.assertEquals(9, postRepository.count());
     }
+
+
     
 }//end

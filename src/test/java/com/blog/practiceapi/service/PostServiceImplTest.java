@@ -1,6 +1,7 @@
 package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.domain.Post;
+import com.blog.practiceapi.exception.PostNotFound;
 import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.request.EditPost;
@@ -185,4 +186,41 @@ class PostServiceImplTest {
         //then
         Assertions.assertEquals(9, postRepository.count());
     }
+
+    @Test
+    @DisplayName("포스트 1개 조회 실패 테스트")
+    void get_one_post_fail_test() {
+        //given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+        //post.getId() // primary_id = 오류일떄
+
+        //expected
+        PostNotFound postNotFound = Assertions.assertThrows(PostNotFound.class, () ->
+                postService.get(post.getId() + 1L));
+    }
+
+    @Test
+    @DisplayName("존재 않는 포스트 삭제 ")
+    void post_delete_exception_test() {
+        //given
+
+        List<Post> posts = IntStream.range(1, 11)
+                .mapToObj(items -> Post.builder()
+                        .title("제목" + items)
+                        .content("내용" + items)
+                        .build()).toList();
+
+        postRepository.saveAll(posts);
+
+        //expected
+        Assertions.assertThrows(PostNotFound.class, () ->  postService.delete(12L));
+        
+    }
+
+
+
 }
