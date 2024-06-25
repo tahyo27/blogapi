@@ -218,7 +218,7 @@ class PostServiceImplTest {
 
         //expected
         Assertions.assertThrows(PostNotFound.class, () ->  postService.delete(12L));
-        
+
     }
 
 

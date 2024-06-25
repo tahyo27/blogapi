@@ -258,6 +258,19 @@ class PostControllerTest {
         Assertions.assertEquals(9, postRepository.count());
     }
 
+    @Test
+    @DisplayName("controller 존재하지 않는 post 삭제")
+    @Transactional
+    void controller_post_delete_exception_test() throws Exception {
+        //expected
+        mockMvc.perform(delete("/posts/{postId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", Matchers.is("PostNotFound")))
+                .andDo(print());
+    }
+
 
     
 }//end

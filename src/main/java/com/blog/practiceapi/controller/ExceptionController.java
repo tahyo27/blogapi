@@ -1,5 +1,6 @@
 package com.blog.practiceapi.controller;
 
+import com.blog.practiceapi.exception.PostNotFound;
 import com.blog.practiceapi.response.ErrorResponse;
 import com.blog.practiceapi.response.ValidationError;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,31 +25,33 @@ public class ExceptionController {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public String exceptionHandler(MethodArgumentNotValidException e) {
+    public ErrorResponse exceptionHandler(MethodArgumentNotValidException e) {
         log.info("ExceptionController called");
         Map<String, String> fieldErrors = new HashMap<>();
         e.getBindingResult().getAllErrors().forEach(objectError -> {
            String fieldName = ((FieldError) objectError).getField();
-           String msg = ((FieldError) objectError).getDefaultMessage();
+           String msg = objectError.getDefaultMessage();
            fieldErrors.put(fieldName, msg);
         });
 
         ValidationError validationError = new ValidationError(fieldErrors);
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        return ErrorResponse.builder()
                 .code("400")
                 .msg("validation error")
                 .validationError(validationError)
                 .build();
+    }
 
-        String jsonString = null;
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(PostNotFound.class)
+    public ErrorResponse exceptionHandler(PostNotFound e) {
+        log.info("PostNotFound exception called");
 
-        try {
-            jsonString = new ObjectMapper().writeValueAsString(errorResponse);
-        } catch (JsonProcessingException ex) {
-            log.error("Json Processing Error");
-        }
-
-        return jsonString;
+        return  ErrorResponse.builder()
+                .code("404")
+                .msg("PostNotFound")
+                .build();
     }
 }
