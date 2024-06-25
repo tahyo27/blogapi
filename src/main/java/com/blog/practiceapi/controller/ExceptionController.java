@@ -1,5 +1,6 @@
 package com.blog.practiceapi.controller;
 
+import com.blog.practiceapi.exception.BlogException;
 import com.blog.practiceapi.exception.PostNotFound;
 import com.blog.practiceapi.response.ErrorResponse;
 import com.blog.practiceapi.response.ValidationError;
@@ -7,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,7 +22,6 @@ import java.util.Map;
 @Slf4j
 @ControllerAdvice
 public class ExceptionController {
-
 
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -44,14 +45,16 @@ public class ExceptionController {
     }
 
     @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(PostNotFound.class)
-    public ErrorResponse exceptionHandler(PostNotFound e) {
+    @ExceptionHandler(BlogException.class)
+    public ResponseEntity<ErrorResponse> BlogException(BlogException e) {
         log.info("PostNotFound exception called");
-
-        return  ErrorResponse.builder()
-                .code("404")
-                .msg("PostNotFound")
+        int stCode = e.getStatusCode();
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(String.valueOf(stCode))
+                .msg(e.getMessage())
                 .build();
+
+        return ResponseEntity.status(stCode)
+                .body(errorResponse); //코드 int로 받는게 나은듯 리스폰스엔티티에 int로 들어가네
     }
 }

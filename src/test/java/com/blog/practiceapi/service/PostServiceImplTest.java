@@ -22,8 +22,8 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@AutoConfigureMockMvc
 @SpringBootTest
+@AutoConfigureMockMvc
 class PostServiceImplTest {
 
     @Autowired
@@ -220,6 +220,8 @@ class PostServiceImplTest {
         Assertions.assertThrows(PostNotFound.class, () ->  postService.delete(12L));
 
     }
+
+
 
 
 

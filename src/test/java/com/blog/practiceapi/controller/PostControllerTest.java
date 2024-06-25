@@ -232,6 +232,27 @@ class PostControllerTest {
     }
 
     @Test
+    @DisplayName("/posts 없는글 삭제 테스트")
+    @Transactional
+    void controller_edit_post_fail_test() throws Exception {
+        //given
+        EditPost editedPost = EditPost.builder()
+                .title("목제1")
+                .content("용내1")
+                .build();
+
+        String json = (new ObjectMapper()).writeValueAsString(editedPost);
+        //expected
+
+        mockMvc.perform(patch("/posts/{postId}", 2L) //patch post/{postId}
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
     @DisplayName("controller post 삭제")
     @Transactional
     void controller_post_delete_test() throws Exception {
@@ -267,10 +288,35 @@ class PostControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message", Matchers.is("PostNotFound")))
+                .andExpect(jsonPath("$.message", Matchers.is("존재하지 않는 글")))
                 .andDo(print());
     }
 
+    @Test
+    @DisplayName("/posts 저장 시 제목 금지 글자 처리")
+    @Transactional
+    void controller_get_post_title_exception_test() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("똥테스트")
+                .content("내용테스트")
+                .build();
 
-    
+        String json = (new ObjectMapper()).writeValueAsString(post);
+
+        //expected
+        mockMvc.perform(post("/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+    }
+
+
+
+
+
+
 }//end

@@ -1,5 +1,6 @@
 package com.blog.practiceapi.controller;
 
+import com.blog.practiceapi.exception.InvalidRequest;
 import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.request.EditPost;
 import com.blog.practiceapi.request.SearchPagingPost;
@@ -22,6 +23,7 @@ public class PostController {
 
     @PostMapping("/posts")
     public void writePost(@RequestBody @Valid CreatePost postRequest) throws Exception {
+        postRequest.isValid();
         postService.write(postRequest);
     }
     @GetMapping("/posts/{postId}")
