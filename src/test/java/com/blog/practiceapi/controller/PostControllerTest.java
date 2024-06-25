@@ -1,6 +1,7 @@
 package com.blog.practiceapi.controller;
 
 import com.blog.practiceapi.domain.Post;
+import com.blog.practiceapi.domain.PostEditor;
 import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.request.EditPost;
@@ -211,15 +212,49 @@ class PostControllerTest {
                 .content(null)
                 .build();
 
-        String json = (new ObjectMapper()).writeValueAsString(editedPost);
+        PostEditor.PostEditorBuilder postEditorBuilder = post.toPostEditor();
+        PostEditor postEditor= postEditorBuilder
+                .title(editedPost.getTitle())
+                .content(editedPost.getContent())
+                .build();
+
+        String json = (new ObjectMapper()).writeValueAsString(postEditor);
         //expected
 
-        mockMvc.perform(patch("/posts") //patch post/{postId}
+        //생각해야할 부분 EditPost에서 null 허용 여부
+        mockMvc.perform(patch("/posts/{postId}", post.getId()) //patch post/{postId}
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                 )
                 .andExpect(status().isOk())
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("controller post 삭제")
+    @Transactional
+    void controller_post_delete_test() throws Exception {
+        //given
+        List<Post> posts = IntStream.range(1, 11)
+                .mapToObj(items -> Post.builder()
+                        .title("제목" + items)
+                        .content("내용" + items)
+                        .build()
+                ).toList();
+
+        postRepository.saveAll(posts);
+
+        //when
+        mockMvc.perform(delete("/posts/{postId}", 5)
+                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+
+
+        //then
+
+        Assertions.assertEquals(9, postRepository.count());
     }
     
 }//end

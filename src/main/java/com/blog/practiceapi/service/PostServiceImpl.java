@@ -69,5 +69,12 @@ public class PostServiceImpl implements PostService {
         log.info("changed_post={}", post);
     }
 
+    @Override
+    public void delete(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException());
+        postRepository.delete(post);
+    }
+
 
 }

@@ -25,7 +25,7 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public String exceptionHandler(MethodArgumentNotValidException e) {
-
+        log.info("ExceptionController called");
         Map<String, String> fieldErrors = new HashMap<>();
         e.getBindingResult().getAllErrors().forEach(objectError -> {
            String fieldName = ((FieldError) objectError).getField();

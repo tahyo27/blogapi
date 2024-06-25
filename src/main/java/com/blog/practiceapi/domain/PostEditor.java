@@ -32,6 +32,9 @@ public class PostEditor {
             }
             return this;
         }
+        public PostEditor build() {
+            return new PostEditor(this.title, this.content);
+        }
     }
 
 }

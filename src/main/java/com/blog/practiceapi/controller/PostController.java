@@ -1,6 +1,7 @@
 package com.blog.practiceapi.controller;
 
 import com.blog.practiceapi.request.CreatePost;
+import com.blog.practiceapi.request.EditPost;
 import com.blog.practiceapi.request.SearchPagingPost;
 import com.blog.practiceapi.response.PostResponse;
 import com.blog.practiceapi.service.PostService;
@@ -23,14 +24,24 @@ public class PostController {
     public void writePost(@RequestBody @Valid CreatePost postRequest) throws Exception {
         postService.write(postRequest);
     }
-    @GetMapping("/posts/{blogPostId}")
-    public PostResponse getPost(@PathVariable(name = "blogPostId") Long blogPostId) {
-        return postService.get(blogPostId);
+    @GetMapping("/posts/{postId}")
+    public PostResponse getPost(@PathVariable(name = "postId") Long postId) {
+        return postService.get(postId);
     }
 
     @GetMapping("/posts")
     public List<PostResponse> getList(SearchPagingPost searchPagingPost) {
 
         return postService.getList(searchPagingPost);
+    }
+
+    @PatchMapping("/posts/{postId}")
+    public void edit(@PathVariable(name = "postId") Long postId, @RequestBody EditPost editRequest) {
+        postService.editPost(postId, editRequest);
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    public void delete(@PathVariable(name = "postId") Long postId) {
+        postService.delete(postId);
     }
 }

@@ -16,4 +16,6 @@ public interface PostService {
     List<PostResponse> getList(SearchPagingPost search);
 
     void editPost(Long id, EditPost editPost);
+
+    void delete(Long id);
 }

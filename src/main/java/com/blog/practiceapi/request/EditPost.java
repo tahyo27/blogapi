@@ -8,10 +8,8 @@ import lombok.extern.jackson.Jacksonized;
 @Getter
 public class EditPost {
 
-    @NotBlank
-    private final String title;
 
-    @NotBlank
+    private final String title;
     private final String content;
 
     @Builder

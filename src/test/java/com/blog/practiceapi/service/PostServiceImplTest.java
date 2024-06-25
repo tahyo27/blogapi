@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -162,5 +163,26 @@ class PostServiceImplTest {
                 .orElseThrow(() -> new RuntimeException("글이 존재하지 않음" + post.getId()));
 
         Assertions.assertEquals(changedPost.getContent(), editedPost.getContent());
+    }
+
+    @Test
+    @DisplayName("post 삭제")
+    void post_delete_test() {
+        //given
+
+        List<Post> posts = IntStream.range(1, 11)
+                .mapToObj(items -> Post.builder()
+                        .title("제목" + items)
+                        .content("내용" + items)
+                        .build()).toList();
+
+        postRepository.saveAll(posts);
+
+        //when
+        postService.delete(5L);
+
+
+        //then
+        Assertions.assertEquals(9, postRepository.count());
     }
 }
