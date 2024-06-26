@@ -7,9 +7,14 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Getter
 @ToString
 public class CreatePost {
+
+    private static final String[] BAD_WORDS = {"시발", "개새끼", "씨발"};
 
     @NotBlank
     private final String title;
@@ -25,8 +30,9 @@ public class CreatePost {
     }
 
     public void isValid() {
-        if(title.contains("똥")) {
-            throw new InvalidRequest();
+        for(String badWord : BAD_WORDS) {
+            if(title.contains(badWord))
+                throw new InvalidRequest("title", "비속어가 포함되어 있습니다");
         }
     }
 

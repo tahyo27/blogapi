@@ -293,12 +293,12 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("/posts 저장 시 제목 금지 글자 처리")
+    @DisplayName("/posts 저장시 제목 비속어 처리")
     @Transactional
     void controller_get_post_title_exception_test() throws Exception {
         //given
         Post post = Post.builder()
-                .title("똥테스트")
+                .title("시발테스트")
                 .content("내용테스트")
                 .build();
 

@@ -7,6 +7,11 @@ public class InvalidRequest extends BlogException {
         super(MESSAGE);
     }
 
+    public InvalidRequest(String fieldName, String msg) {
+        super(MESSAGE);
+        addValidation(fieldName, msg);
+    }
+
     @Override
     public int getStatusCode() {
         return 400;

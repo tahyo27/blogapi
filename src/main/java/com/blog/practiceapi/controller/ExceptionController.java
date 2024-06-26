@@ -35,12 +35,10 @@ public class ExceptionController {
            fieldErrors.put(fieldName, msg);
         });
 
-        ValidationError validationError = new ValidationError(fieldErrors);
-
         return ErrorResponse.builder()
                 .code("400")
                 .msg("validation error")
-                .validationError(validationError)
+                .validationError(new ValidationError(fieldErrors))
                 .build();
     }
 
@@ -52,9 +50,10 @@ public class ExceptionController {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code(String.valueOf(stCode))
                 .msg(e.getMessage())
+                .validationError(new ValidationError(e.getValidation()))
                 .build();
 
         return ResponseEntity.status(stCode)
-                .body(errorResponse); //코드 int로 받는게 나은듯 리스폰스엔티티에 int로 들어가네
+                .body(errorResponse);
     }
 }
