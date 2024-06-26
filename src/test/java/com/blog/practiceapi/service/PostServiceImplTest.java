@@ -167,10 +167,9 @@ class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("post 삭제")
+    @DisplayName("post 삭제 테스트")
     void post_delete_test() {
         //given
-
         List<Post> posts = IntStream.range(1, 11)
                 .mapToObj(items -> Post.builder()
                         .title("제목" + items)
@@ -180,7 +179,7 @@ class PostServiceImplTest {
         postRepository.saveAll(posts);
 
         //when
-        postService.delete(5L);
+        postService.delete(posts.get(2).getId());
 
 
         //then
