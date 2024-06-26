@@ -11,6 +11,7 @@ public class ValidationError {
 
     @JsonProperty("title")
     private final String title;
+
     @JsonProperty("content")
     private final String content;
 
