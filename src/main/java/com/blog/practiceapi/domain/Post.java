@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,7 +24,7 @@ public class Post {
     private String content;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
-    private List<Comment> comments;
+    private final List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Post(String title, String content) {
@@ -40,5 +41,9 @@ public class Post {
     public void edit(PostEditor postEditor) {
         title = postEditor.getTitle();
         content = postEditor.getContent();
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
     }
 }
