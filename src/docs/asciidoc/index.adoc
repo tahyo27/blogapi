@@ -1,21 +1,68 @@
 = BLOG API
 
 :toc:
+:toc-placement: preamble
 
-== Post 1개 조회
+== Post 조회
 
 === Request
-include::{snippets}/index/http-request.adoc[]
+include::{snippets}/post-inquiry/http-request.adoc[]
 
-== Request Parameter
-
-include::{snippets}/index/path-parameters.adoc[]
+include::{snippets}/post-inquiry/path-parameters.adoc[]
 
 
 === Response
-include::{snippets}/index/http-response.adoc[]
 
-include::{snippets}/index/response-fields.adoc[]
+include::{snippets}/post-inquiry/http-response.adoc[]
+
+include::{snippets}/post-inquiry/response-fields.adoc[]
 
 === Curl
-include::{snippets}/index/curl-request.adoc[]
+
+include::{snippets}/post-inquiry/curl-request.adoc[]
+
+== Post 등록
+
+=== Request
+
+include::{snippets}/post-regist/http-request.adoc[]
+
+
+=== Response
+
+include::{snippets}/post-regist/http-response.adoc[]
+
+=== Curl
+
+include::{snippets}/post-regist/curl-request.adoc[]
+
+== Post 수정
+
+=== Request
+
+include::{snippets}/post-update/http-request.adoc[]
+
+include::{snippets}/post-update/path-parameters.adoc[]
+
+=== Response
+
+include::{snippets}/post-update/http-response.adoc[]
+
+=== Curl
+include::{snippets}/post-update/curl-request.adoc[]
+
+== Post 삭제
+
+=== Request
+
+include::{snippets}/post-delete/http-request.adoc[]
+
+include::{snippets}/post-delete/path-parameters.adoc[]
+
+=== Response
+
+include::{snippets}/post-delete/http-response.adoc[]
+
+=== Curl
+
+include::{snippets}/post-delete/curl-request.adoc[]
