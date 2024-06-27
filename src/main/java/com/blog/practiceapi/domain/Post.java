@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 @Entity
 @Getter
 @ToString
@@ -19,6 +21,9 @@ public class Post {
 
     @Lob
     private String content;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
+    private List<Comment> comments;
 
     @Builder
     public Post(String title, String content) {
