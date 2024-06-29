@@ -1,9 +1,11 @@
 package com.blog.practiceapi.controller;
 
+import com.blog.practiceapi.config.data.MemberSession;
 import com.blog.practiceapi.domain.Member;
 import com.blog.practiceapi.repository.MemberRepository;
 import com.blog.practiceapi.request.Login;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -62,6 +65,36 @@ class AuthorizationControllerTest {
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
 
+
+
+    }
+
+    @Test
+    @DisplayName("Resolver 테스트")
+    void resolver_test() throws Exception {
+        //given
+        Member member = Member.builder()
+                .name("psyduck")
+                .email("ddd@naver.com")
+                .password("1234")
+                .build();
+
+        memberRepository.save(member); //멤버 저장 후 로그인
+
+        MemberSession memberSession = new MemberSession(member.getName());
+
+        String json = null;
+
+        json = new ObjectMapper().writeValueAsString(memberSession);
+
+        //expected
+        mockMvc.perform(get("/testSession")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string("주인장"))
+                .andDo(MockMvcResultHandlers.print());
 
 
     }
