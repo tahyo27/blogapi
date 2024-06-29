@@ -1,6 +1,7 @@
 package com.blog.practiceapi.controller;
 
 import com.blog.practiceapi.request.Login;
+import com.blog.practiceapi.response.SessionResponse;
 import com.blog.practiceapi.service.AuthorizationService;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +20,12 @@ public class AuthorizationController {
     private final AuthorizationService authService;
 
     @PostMapping("/auth/login")
-    public String login(@RequestBody Login login) {
+    public SessionResponse login(@RequestBody Login login) {
 
         SecretKey key = Jwts.SIG.HS256.key().build();
 
         String jws = Jwts.builder().subject("Joe").signWith(key).compact();
 
-        return jws;
+        return new SessionResponse(jws);
     }
 }
