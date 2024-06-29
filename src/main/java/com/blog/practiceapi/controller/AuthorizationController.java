@@ -18,7 +18,7 @@ public class AuthorizationController {
 
     private final AuthorizationService authService;
 
-    @PostMapping("auth/login")
+    @PostMapping("/auth/login")
     public String login(@RequestBody Login login) {
 
         SecretKey key = Jwts.SIG.HS256.key().build();
