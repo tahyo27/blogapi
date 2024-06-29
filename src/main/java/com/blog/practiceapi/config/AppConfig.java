@@ -1,11 +1,9 @@
 package com.blog.practiceapi.config;
 
 import com.blog.practiceapi.repository.CommentRepository;
+import com.blog.practiceapi.repository.MemberRepository;
 import com.blog.practiceapi.repository.PostRepository;
-import com.blog.practiceapi.service.CommentService;
-import com.blog.practiceapi.service.CommentServiceImpl;
-import com.blog.practiceapi.service.PostService;
-import com.blog.practiceapi.service.PostServiceImpl;
+import com.blog.practiceapi.service.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -33,5 +31,10 @@ public class AppConfig {
     @Bean
     public CommentService commentService(PostRepository postRepository, CommentRepository commentRepository) {
         return new CommentServiceImpl(postRepository, commentRepository);
+    }
+
+    @Bean
+    public AuthorizationService authorizationService(MemberRepository memberRepository) {
+        return new AuthorizationServiceImpl(memberRepository);
     }
 }
