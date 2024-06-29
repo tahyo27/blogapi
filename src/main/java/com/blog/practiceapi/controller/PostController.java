@@ -21,10 +21,17 @@ public class PostController {
 
     private final PostService postService;
 
+    @GetMapping("/test")
+    public String test() {
+
+        return "test임";
+    }
     @PostMapping("/posts")
-    public void writePost(@RequestBody @Valid CreatePost postRequest) throws Exception {
-        postRequest.isValid();
-        postService.write(postRequest);
+    public void writePost(@RequestBody @Valid CreatePost postRequest, @RequestHeader String authorization) throws Exception {
+        if(authorization.equals("psyduck")) {
+            postRequest.isValid();
+            postService.write(postRequest);
+        }
     }
     @GetMapping("/posts/{postId}")
     public PostResponse getPost(@PathVariable(name = "postId") Long postId) {

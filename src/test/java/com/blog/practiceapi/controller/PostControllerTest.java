@@ -94,7 +94,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("/posts 요청시 DB에 값 저장")
+    @DisplayName("/posts 요청시 DB에 값 저장 인증")
     @Transactional
     void controller_post_save_db_test() throws Exception {
         //given
@@ -105,7 +105,8 @@ class PostControllerTest {
 
         String json = (new ObjectMapper()).writeValueAsString(request);
         //when
-        mockMvc.perform(post("/posts")
+        mockMvc.perform(post("/posts?authorization=psyduck")
+                        .header("authorization", "psyduck")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                 )
