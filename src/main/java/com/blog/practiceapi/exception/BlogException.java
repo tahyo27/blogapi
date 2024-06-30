@@ -13,7 +13,7 @@ public abstract class BlogException extends RuntimeException{
     public BlogException(String message) {
         super(message);
     }
-    public void addValidation(String fieldName, String message) {
+    protected void addValidation(String fieldName, String message) {
         validation.put(fieldName, message);
     }
 

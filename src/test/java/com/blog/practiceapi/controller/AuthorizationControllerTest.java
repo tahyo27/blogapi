@@ -37,8 +37,9 @@ class AuthorizationControllerTest {
     public void clean() {
         memberRepository.deleteAll();
     }
+
     @Test
-    @DisplayName("로그인시 JWT 반환 테스트")
+    @DisplayName("로그인시 JWT 인증 테스트")
     void jwt_login_return_test() throws Exception {
         //given
         Member member = Member.builder()
@@ -56,17 +57,16 @@ class AuthorizationControllerTest {
         String json = null;
 
         json = new ObjectMapper().writeValueAsString(login);
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.mNHI7gEGjaLPNUmGmto3CBDBu_fz_KBQeVzWyJxKyuw";
 
         //expected
-        mockMvc.perform(post("/auth/login")
+        mockMvc.perform(post("/authorize/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
         )
                 .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
-
-
-
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath("$.token" , Matchers.is(token)));
     }
 
     @Test
@@ -81,19 +81,20 @@ class AuthorizationControllerTest {
 
         memberRepository.save(member); //멤버 저장 후 로그인
 
-        MemberSession memberSession = new MemberSession(member.getName());
+        MemberSession memberSession = new MemberSession(member.getId());
 
         String json = null;
 
         json = new ObjectMapper().writeValueAsString(memberSession);
-
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.mNHI7gEGjaLPNUmGmto3CBDBu_fz_KBQeVzWyJxKyuw";
         //expected
         mockMvc.perform(get("/testSession")
+                        .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string("주인장"))
+                .andExpect(content().string("1"))
                 .andDo(MockMvcResultHandlers.print());
 
 

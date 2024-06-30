@@ -1,7 +1,9 @@
 package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.domain.Member;
+import com.blog.practiceapi.domain.Session;
 import com.blog.practiceapi.exception.AlreadyExistEmail;
+import com.blog.practiceapi.exception.InvalidLogInException;
 import com.blog.practiceapi.repository.MemberRepository;
 import com.blog.practiceapi.request.Login;
 import com.blog.practiceapi.request.Sign;
@@ -16,7 +18,12 @@ public class AuthorizationServiceImpl implements AuthorizationService{
 
     @Override
     public Long login(Login login) {
-        return null;
+        Member member = memberRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
+                .orElseThrow(InvalidLogInException::new);
+
+        Session session = member.addSession();
+
+        return member.getId();
     }
 
     @Override

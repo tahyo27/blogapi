@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public class MemberSession {
 
-    public String name;
+    public Long memberId;
 
-    public MemberSession(String name) {
-        this.name = name;
+    public MemberSession(Long memberId) {
+        this.memberId = memberId;
     }
 }
