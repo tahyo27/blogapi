@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -19,9 +20,10 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
 @Slf4j
+@RequiredArgsConstructor
 public class AuthorizationResolver implements HandlerMethodArgumentResolver {
 
-    private static final String SECRET_KEY = "6YehYF5iMhiqa+aNkhs69LWrPFwK/H+kJ4xuV5ndfAc=";
+    private final StrDataConfig strDataConfig;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) { // 원하는 파라미터 체크
@@ -31,7 +33,7 @@ public class AuthorizationResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String jws = webRequest.getHeader("Authorization");
-        SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(SECRET_KEY));
+        SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(strDataConfig.jwtStrKey));
 
         if(jws != null && jws.isEmpty()) {
             throw new NotAuthenticated();

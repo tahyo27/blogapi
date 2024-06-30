@@ -94,7 +94,7 @@ class AuthorizationControllerTest {
                         .content(json)
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string("1"))
+                .andExpect(content().string(String.valueOf(member.getId())))
                 .andDo(MockMvcResultHandlers.print());
 
 

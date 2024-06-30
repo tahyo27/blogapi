@@ -1,5 +1,6 @@
 package com.blog.practiceapi.controller;
 
+import com.blog.practiceapi.config.StrDataConfig;
 import com.blog.practiceapi.config.data.MemberSession;
 import com.blog.practiceapi.request.Login;
 import com.blog.practiceapi.response.SessionResponse;
@@ -23,7 +24,7 @@ import java.util.Base64;
 public class AuthorizationController {
 
     private final AuthorizationService authService;
-    private static final String SECRET_KEY = "6YehYF5iMhiqa+aNkhs69LWrPFwK/H+kJ4xuV5ndfAc=";
+    private final StrDataConfig strDataConfig;
 
     @GetMapping("/testSession")
     public Long testSession(MemberSession memberSession) {
@@ -33,7 +34,7 @@ public class AuthorizationController {
     public SessionResponse login(@RequestBody Login login) {
         Long memberId = authService.login(login);
 
-        SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(SECRET_KEY));
+        SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(strDataConfig.jwtStrKey));
         String jws = Jwts.builder().subject(String.valueOf(memberId)).signWith(key).compact();
 
         log.info(">>>>>>>>>>>>>>{}", jws);
