@@ -39,7 +39,7 @@ class AuthorizationControllerTest {
     }
 
     @Test
-    @DisplayName("로그인시 JWT 인증 테스트")
+    @DisplayName("로그인시 JWT 토근 발급 테스트")
     void jwt_login_return_test() throws Exception {
         //given
         Member member = Member.builder()
@@ -57,7 +57,7 @@ class AuthorizationControllerTest {
         String json = null;
 
         json = new ObjectMapper().writeValueAsString(login);
-        String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.mNHI7gEGjaLPNUmGmto3CBDBu_fz_KBQeVzWyJxKyuw";
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE5NjczMjAwfQ.KxPvnQQvowWVHQ9B_fzvvVMHjVNlRBlpMn11fIxv3a4";
 
         //expected
         mockMvc.perform(post("/authorize/login")
@@ -70,7 +70,7 @@ class AuthorizationControllerTest {
     }
 
     @Test
-    @DisplayName("Resolver 테스트")
+    @DisplayName("인증 Resolver 테스트")
     void resolver_test() throws Exception {
         //given
         Member member = Member.builder()

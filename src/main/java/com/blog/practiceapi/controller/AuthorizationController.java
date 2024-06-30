@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
+
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
 
 @Slf4j
 @RestController
@@ -34,8 +36,21 @@ public class AuthorizationController {
     public SessionResponse login(@RequestBody Login login) {
         Long memberId = authService.login(login);
 
-        SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(strDataConfig.jwtStrKey));
-        String jws = Jwts.builder().subject(String.valueOf(memberId)).signWith(key).compact();
+        // 현재 날짜를 얻기 위한 Calendar 객체 생성
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // 날짜와 시간을 0으로 설정한 Date 객체 생성
+        Date now = calendar.getTime();
+
+        String jws = Jwts.builder()
+                .subject(String.valueOf(memberId))
+                .signWith(strDataConfig.secretKey())
+                .issuedAt(now)
+                .compact();
 
         log.info(">>>>>>>>>>>>>>{}", jws);
         return new SessionResponse(jws);

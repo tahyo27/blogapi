@@ -20,7 +20,6 @@ public class AuthorizationServiceImpl implements AuthorizationService{
     public Long login(Login login) {
         Member member = memberRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
                 .orElseThrow(InvalidLogInException::new);
-
         Session session = member.addSession();
 
         return member.getId();

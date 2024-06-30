@@ -2,7 +2,7 @@ package com.blog.practiceapi.exception;
 
 public class AlreadyExistEmail extends BlogException{
 
-    private static final String MESSAGE = "이미 존재하는 이메일";
+    private static final String MESSAGE = "이미 존재하는 이메일입니다";
 
     public AlreadyExistEmail() {
         super(MESSAGE);

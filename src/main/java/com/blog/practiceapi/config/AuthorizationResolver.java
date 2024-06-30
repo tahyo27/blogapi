@@ -33,15 +33,14 @@ public class AuthorizationResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String jws = webRequest.getHeader("Authorization");
-        SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(strDataConfig.jwtStrKey));
 
         if(jws != null && jws.isEmpty()) {
             throw new NotAuthenticated();
         }
         try {
-            Jws<Claims> claimsJws = Jwts.parser().verifyWith(key).build().parseSignedClaims(jws);
+            Jws<Claims> claimsJws = Jwts.parser().verifyWith(strDataConfig.secretKey()).build().parseSignedClaims(jws);
             //OK, we can trust this JWT
-            log.info(">>>>>>>>>>{}", claimsJws);
+            log.info("resolveArgument JWT >>>> {}", claimsJws);
             String memberId = claimsJws.getPayload().getSubject();
             return new MemberSession(Long.parseLong(memberId));
         } catch (JwtException e) {
