@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,8 +33,11 @@ public class CreatePost {
 
     public void isValid() {
         for(String badWord : BAD_WORDS) {
-            if(title.contains(badWord))
-                throw new InvalidRequest("title", "비속어가 포함되어 있습니다");
+            if(title.contains(badWord)) {
+                throw new InvalidRequest(Map.of("title", "비속어가 포함되어 있습니다."));
+            } else if(content.contains(badWord)) {
+                throw new InvalidRequest(Map.of("content", "비속어가 포함되어 있습니다."));
+            }
         }
     }
 

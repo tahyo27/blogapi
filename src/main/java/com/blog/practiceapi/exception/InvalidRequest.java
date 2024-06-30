@@ -1,4 +1,9 @@
 package com.blog.practiceapi.exception;
+
+import com.blog.practiceapi.response.ValidationError;
+
+import java.util.Map;
+
 //정책상 400에러
 public class InvalidRequest extends BlogException {
 
@@ -6,10 +11,9 @@ public class InvalidRequest extends BlogException {
     public InvalidRequest() {
         super(MESSAGE);
     }
-
-    public InvalidRequest(String fieldName, String msg) {
+    public InvalidRequest(Map<String, String> map) {
         super(MESSAGE);
-        addValidation(fieldName, msg);
+        addValidation(new ValidationError(map));
     }
 
     @Override

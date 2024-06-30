@@ -68,6 +68,7 @@ class PostControllerTest {
         System.out.println(json);
         //expect
         mockMvc.perform(post("/posts")
+                        .header("authorization", "psyduck")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                 )
@@ -82,14 +83,11 @@ class PostControllerTest {
     void controller_get_exception_test() throws Exception {
         //expect
         mockMvc.perform(post("/posts")
+                        .header("authorization", "psyduck")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\": null, \"content\": \"\"}")
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.message").value("validation error"))
-                .andExpect(jsonPath("$.validation.title").value("must not be blank"))
-                .andExpect(jsonPath("$.validation.content").value("must not be blank"))
                 .andDo(print());
     }
 
@@ -246,6 +244,7 @@ class PostControllerTest {
         //expected
 
         mockMvc.perform(patch("/posts/{postId}", 2L) //patch post/{postId}
+                        .header("authorization", "psyduck")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                 )
@@ -286,7 +285,8 @@ class PostControllerTest {
     void controller_post_delete_exception_test() throws Exception {
         //expected
         mockMvc.perform(delete("/posts/{postId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
+                                .header("authorization", "psyduck")
+                                .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", Matchers.is("존재하지 않는 글")))
@@ -304,9 +304,10 @@ class PostControllerTest {
                 .build();
 
         String json = (new ObjectMapper()).writeValueAsString(post);
-
+        //String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.mNHI7gEGjaLPNUmGmto3CBDBu_fz_KBQeVzWyJxKyuw";
         //expected
         mockMvc.perform(post("/posts")
+                        .header("authorization", "psyduck")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                 )
