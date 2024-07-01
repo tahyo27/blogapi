@@ -1,30 +1,19 @@
 package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.domain.Member;
-import com.blog.practiceapi.encryption.PasswordEncryption;
-import com.blog.practiceapi.exception.InvalidLogInException;
-import com.blog.practiceapi.exception.PostNotFound;
 import com.blog.practiceapi.repository.MemberRepository;
 
-import com.blog.practiceapi.request.Login;
-import com.blog.practiceapi.request.Sign;
-import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
 class AuthorizationServiceImplTest {
 
-    @Autowired
-    EntityManager em;
     @Autowired
     private MemberRepository memberRepository;
 
@@ -80,69 +69,5 @@ class AuthorizationServiceImplTest {
 
     }
 
-    @Test
-    @DisplayName("회원 가입 암호화 테스트")
-    void member_sign_scrypt_test() {
-        //given
-        Sign sign = Sign.builder()
-                .name("HONG")
-                .password("1234")
-                .email("aaa@naver.com")
-                .build();
-        //when
-        authorizationService.sign(sign);
-        Member member = memberRepository.findByEmail(sign.getEmail()).orElseThrow(PostNotFound::new);
 
-        //then
-        Assertions.assertThat(sign.getEmail()).isEqualTo(member.getEmail());
-        Assertions.assertThat(sign.getName()).isEqualTo(member.getName());
-        assertTrue(new PasswordEncryption().matches("1234", member.getPassword()));
-
-
-    }
-
-    @Test
-    @DisplayName("비밀번호 암호화 로그인 테스트")
-    void member_login_scrypt_test() {
-        //given
-        Member member = Member.builder()
-                .name("psyduck")
-                .email("aaaa@naver.com")
-                .password(new PasswordEncryption().encrypt("1234"))
-                .build();
-
-        memberRepository.save(member);
-
-        Login login = Login.builder()
-                .email("aaaa@naver.com")
-                .password("1234")
-                .build();
-
-        //when
-        Long memberId = authorizationService.login(login);
-
-        //then
-        Assertions.assertThat(memberId).isEqualTo(member.getId());
-    }
-
-    @Test
-    @DisplayName("비밀번호 암호화 로그인 실패 테스트")
-    void member_login_scrypt_fail_test() {
-        //given
-        Member member = Member.builder()
-                .name("psyduck")
-                .email("aaaa@naver.com")
-                .password(new PasswordEncryption().encrypt("1234"))
-                .build();
-
-        memberRepository.save(member);
-
-        Login login = Login.builder()
-                .email("aaa@naver.com")
-                .password("3456")
-                .build();
-
-        //expected
-        assertThrows(InvalidLogInException.class, () -> authorizationService.login(login));
-    }
 }

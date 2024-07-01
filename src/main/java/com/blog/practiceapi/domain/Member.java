@@ -24,10 +24,6 @@ public class Member {
     private String name;
 
     private String password;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "member")
-    private List<Session> sessionLists = new ArrayList<>();
-
     @Builder
     public Member(String email, String name, String password) {
         this.email = email;
@@ -35,12 +31,4 @@ public class Member {
         this.password = password;
     }
 
-    public Session addSession() {
-        Session session = Session.builder()
-                .member(this)
-                .build();
-        sessionLists.add(session);
-
-        return session;
-    }
 }

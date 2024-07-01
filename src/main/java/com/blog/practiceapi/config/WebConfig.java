@@ -20,8 +20,4 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:5173");
     }
 
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new AuthorizationResolver(strDataConfig));
-    }
 }

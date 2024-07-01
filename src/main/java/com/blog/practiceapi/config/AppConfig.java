@@ -1,6 +1,5 @@
 package com.blog.practiceapi.config;
 
-import com.blog.practiceapi.encryption.PasswordEncryption;
 import com.blog.practiceapi.repository.CommentRepository;
 import com.blog.practiceapi.repository.MemberRepository;
 import com.blog.practiceapi.repository.PostRepository;
@@ -35,7 +34,7 @@ public class AppConfig {
     }
 
     @Bean
-    public AuthorizationService authorizationService(MemberRepository memberRepository, PasswordEncryption passwordEncryption) {
-        return new AuthorizationServiceImpl(memberRepository, passwordEncryption);
+    public AuthorizationService authorizationService(MemberRepository memberRepository) {
+        return new AuthorizationServiceImpl(memberRepository);
     }
 }
