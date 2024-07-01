@@ -2,6 +2,7 @@ package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.domain.Member;
 import com.blog.practiceapi.domain.Session;
+import com.blog.practiceapi.encryption.PasswordEncryption;
 import com.blog.practiceapi.exception.AlreadyExistEmail;
 import com.blog.practiceapi.exception.InvalidLogInException;
 import com.blog.practiceapi.repository.MemberRepository;
@@ -21,10 +22,9 @@ public class AuthorizationServiceImpl implements AuthorizationService{
     public Long login(Login login) {
         Member member = memberRepository.findByEmail(login.getEmail())
                 .orElseThrow(InvalidLogInException::new);
-        SCryptPasswordEncoder encoder = new SCryptPasswordEncoder(
-                8, 8, 1, 32, 64);
+        PasswordEncryption passwordEncryption = new PasswordEncryption();
 
-        boolean matches = encoder.matches(login.getPassword(), member.getPassword());
+        boolean matches = passwordEncryption.matches(login.getPassword(), member.getPassword());
 
         if(!matches) {
             throw new InvalidLogInException();
@@ -40,10 +40,9 @@ public class AuthorizationServiceImpl implements AuthorizationService{
             throw new AlreadyExistEmail();
         }
 
-        SCryptPasswordEncoder encoder = new SCryptPasswordEncoder(
-                8, 8, 1, 32, 64);
+        PasswordEncryption passwordEncryption = new PasswordEncryption();
 
-        String scrpytPassword = encoder.encode(sign.getPassword());
+        String scrpytPassword = passwordEncryption.encrypt(sign.getPassword());
 
 
         Member member = Member.builder()

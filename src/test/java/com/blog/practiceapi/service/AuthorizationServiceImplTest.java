@@ -1,6 +1,7 @@
 package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.domain.Member;
+import com.blog.practiceapi.encryption.PasswordEncryption;
 import com.blog.practiceapi.exception.InvalidLogInException;
 import com.blog.practiceapi.exception.PostNotFound;
 import com.blog.practiceapi.repository.MemberRepository;
@@ -91,7 +92,7 @@ class AuthorizationServiceImplTest {
         //then
         Assertions.assertThat(sign.getEmail()).isEqualTo(member.getEmail());
         Assertions.assertThat(sign.getName()).isEqualTo(member.getName());
-        Assertions.assertThat(sign.getPassword()).isNotNull();
+        assertTrue(new PasswordEncryption().matches("1234", member.getPassword()));
 
 
     }
@@ -100,15 +101,16 @@ class AuthorizationServiceImplTest {
     @DisplayName("비밀번호 암호화 로그인 테스트")
     void member_login_scrypt_test() {
         //given
-        Sign sign = Sign.builder()
-                .name("HONG")
-                .password("1234")
-                .email("aaa@naver.com")
+        Member member = Member.builder()
+                .name("psyduck")
+                .email("aaaa@naver.com")
+                .password(new PasswordEncryption().encrypt("1234"))
                 .build();
-        authorizationService.sign(sign);
+
+        memberRepository.save(member);
 
         Login login = Login.builder()
-                .email("aaa@naver.com")
+                .email("aaaa@naver.com")
                 .password("1234")
                 .build();
 
@@ -123,16 +125,17 @@ class AuthorizationServiceImplTest {
     @DisplayName("비밀번호 암호화 로그인 실패 테스트")
     void member_login_scrypt_fail_test() {
         //given
-        Sign sign = Sign.builder()
-                .name("HONG")
-                .password("5678")
-                .email("aaa@naver.com")
+        Member member = Member.builder()
+                .name("psyduck")
+                .email("aaaa@naver.com")
+                .password(new PasswordEncryption().encrypt("1234"))
                 .build();
-        authorizationService.sign(sign);
+
+        memberRepository.save(member);
 
         Login login = Login.builder()
                 .email("aaa@naver.com")
-                .password("1234")
+                .password("3456")
                 .build();
 
         //expected
