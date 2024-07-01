@@ -8,6 +8,7 @@ import com.blog.practiceapi.repository.MemberRepository;
 import com.blog.practiceapi.request.Login;
 import com.blog.practiceapi.request.Sign;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -18,9 +19,16 @@ public class AuthorizationServiceImpl implements AuthorizationService{
 
     @Override
     public Long login(Login login) {
-        Member member = memberRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
+        Member member = memberRepository.findByEmail(login.getEmail())
                 .orElseThrow(InvalidLogInException::new);
-        Session session = member.addSession();
+        SCryptPasswordEncoder encoder = new SCryptPasswordEncoder(
+                8, 8, 1, 32, 64);
+
+        boolean matches = encoder.matches(login.getPassword(), member.getPassword());
+
+        if(!matches) {
+            throw new InvalidLogInException();
+        }
 
         return member.getId();
     }
@@ -31,10 +39,17 @@ public class AuthorizationServiceImpl implements AuthorizationService{
         if(memberOptional.isPresent()) {
             throw new AlreadyExistEmail();
         }
+
+        SCryptPasswordEncoder encoder = new SCryptPasswordEncoder(
+                8, 8, 1, 32, 64);
+
+        String scrpytPassword = encoder.encode(sign.getPassword());
+
+
         Member member = Member.builder()
                 .name(sign.getName())
                 .email(sign.getEmail())
-                .password(sign.getPassword())
+                .password(scrpytPassword)
                 .build();
 
         memberRepository.save(member);

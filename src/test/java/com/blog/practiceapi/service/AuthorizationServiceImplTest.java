@@ -1,13 +1,20 @@
 package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.domain.Member;
+import com.blog.practiceapi.exception.InvalidLogInException;
+import com.blog.practiceapi.exception.PostNotFound;
 import com.blog.practiceapi.repository.MemberRepository;
 
+import com.blog.practiceapi.request.Login;
+import com.blog.practiceapi.request.Sign;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
@@ -15,6 +22,14 @@ class AuthorizationServiceImplTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private AuthorizationService authorizationService;
+
+    @BeforeEach
+    void clean() {
+        memberRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("회원 가입 DB 저장 테스트")
@@ -58,5 +73,69 @@ class AuthorizationServiceImplTest {
         Assertions.assertThat(member.getEmail()).isEqualTo(findMeber.getEmail());
         Assertions.assertThat(member.getPassword()).isEqualTo(findMeber.getPassword());
 
+    }
+
+    @Test
+    @DisplayName("회원 가입 암호화 테스트")
+    void member_sign_scrypt_test() {
+        //given
+        Sign sign = Sign.builder()
+                .name("HONG")
+                .password("1234")
+                .email("aaa@naver.com")
+                .build();
+        //when
+        authorizationService.sign(sign);
+        Member member = memberRepository.findByEmail(sign.getEmail()).orElseThrow(() -> new PostNotFound());
+
+        //then
+        Assertions.assertThat(sign.getEmail()).isEqualTo(member.getEmail());
+        Assertions.assertThat(sign.getName()).isEqualTo(member.getName());
+        Assertions.assertThat(sign.getPassword()).isNotNull();
+
+
+    }
+
+    @Test
+    @DisplayName("비밀번호 암호화 로그인 테스트")
+    void member_login_scrypt_test() {
+        //given
+        Sign sign = Sign.builder()
+                .name("HONG")
+                .password("1234")
+                .email("aaa@naver.com")
+                .build();
+        authorizationService.sign(sign);
+
+        Login login = Login.builder()
+                .email("aaa@naver.com")
+                .password("1234")
+                .build();
+
+        //when
+        Long memberId = authorizationService.login(login);
+
+        //then
+        Assertions.assertThat(memberId).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("비밀번호 암호화 로그인 실패 테스트")
+    void member_login_scrypt_fail_test() {
+        //given
+        Sign sign = Sign.builder()
+                .name("HONG")
+                .password("5678")
+                .email("aaa@naver.com")
+                .build();
+        authorizationService.sign(sign);
+
+        Login login = Login.builder()
+                .email("aaa@naver.com")
+                .password("1234")
+                .build();
+
+        //expected
+        assertThrows(InvalidLogInException.class, () -> authorizationService.login(login));
     }
 }

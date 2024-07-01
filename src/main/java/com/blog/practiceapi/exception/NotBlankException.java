@@ -19,13 +19,11 @@ public class NotBlankException extends BlogException{
 
     public NotBlankException(MethodArgumentNotValidException e) {
         super(MESSAGE);
-
         Map<String, String> fieldErrors = e.getBindingResult().getAllErrors().stream()
                 .collect(Collectors.toMap(
                         objectError -> ((FieldError) objectError).getField(),
                         objectError -> objectError.getDefaultMessage()
                 ));
-        log.info("낫블랭크 익셉션 >>>>>>>>{}", fieldErrors.toString());
         addValidation(new ValidationError(fieldErrors));
     }
 
