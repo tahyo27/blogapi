@@ -8,12 +8,14 @@ import com.blog.practiceapi.repository.MemberRepository;
 
 import com.blog.practiceapi.request.Login;
 import com.blog.practiceapi.request.Sign;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class AuthorizationServiceImplTest {
 
+    @Autowired
+    EntityManager em;
     @Autowired
     private MemberRepository memberRepository;
 
@@ -44,7 +48,7 @@ class AuthorizationServiceImplTest {
 
         memberRepository.save(member);
         //when
-        Member findMeber = memberRepository.findById(member.getId()).orElseThrow(() -> new NullPointerException());
+        Member findMeber = memberRepository.findById(member.getId()).orElseThrow(NullPointerException::new);
 
 
         //then
@@ -87,7 +91,7 @@ class AuthorizationServiceImplTest {
                 .build();
         //when
         authorizationService.sign(sign);
-        Member member = memberRepository.findByEmail(sign.getEmail()).orElseThrow(() -> new PostNotFound());
+        Member member = memberRepository.findByEmail(sign.getEmail()).orElseThrow(PostNotFound::new);
 
         //then
         Assertions.assertThat(sign.getEmail()).isEqualTo(member.getEmail());
@@ -118,7 +122,7 @@ class AuthorizationServiceImplTest {
         Long memberId = authorizationService.login(login);
 
         //then
-        Assertions.assertThat(memberId).isEqualTo(1L);
+        Assertions.assertThat(memberId).isEqualTo(member.getId());
     }
 
     @Test

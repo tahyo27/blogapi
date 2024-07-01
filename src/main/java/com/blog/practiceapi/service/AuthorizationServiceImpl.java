@@ -17,12 +17,12 @@ import java.util.Optional;
 public class AuthorizationServiceImpl implements AuthorizationService{
 
     private final MemberRepository memberRepository;
+    private final PasswordEncryption passwordEncryption;
 
     @Override
     public Long login(Login login) {
         Member member = memberRepository.findByEmail(login.getEmail())
                 .orElseThrow(InvalidLogInException::new);
-        PasswordEncryption passwordEncryption = new PasswordEncryption();
 
         boolean matches = passwordEncryption.matches(login.getPassword(), member.getPassword());
 
@@ -39,8 +39,6 @@ public class AuthorizationServiceImpl implements AuthorizationService{
         if(memberOptional.isPresent()) {
             throw new AlreadyExistEmail();
         }
-
-        PasswordEncryption passwordEncryption = new PasswordEncryption();
 
         String scrpytPassword = passwordEncryption.encrypt(sign.getPassword());
 

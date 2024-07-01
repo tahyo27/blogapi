@@ -1,7 +1,9 @@
 package com.blog.practiceapi.encryption;
 
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PasswordEncryption {
 
     private static final SCryptPasswordEncoder encoder = new SCryptPasswordEncoder(
