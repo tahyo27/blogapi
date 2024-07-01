@@ -47,6 +47,10 @@ public class WebSecurityConfig {
                                 .passwordParameter("password")
                                 .successForwardUrl("/")
                 )
+                .rememberMe(remember -> remember.rememberMeParameter("remember")
+                        .alwaysRemember(false)
+                        .tokenValiditySeconds(1296000)
+                )
                 .userDetailsService(userDetailsService());
                              // 스프링 6.1부터 메서드 체이닝말고 람다로 해야함
         return httpSecurity.build();
