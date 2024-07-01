@@ -19,7 +19,7 @@ public class AuthorizationController {
     }
 
     @PostMapping("/auth/sign")
-    public String sign(@RequestBody Sign sign) {
-        return "회원가입 페이지";
+    public void sign(@RequestBody Sign sign) {
+        authorizationService.sign(sign);
     }
 }

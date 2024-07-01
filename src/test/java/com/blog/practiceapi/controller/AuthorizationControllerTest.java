@@ -1,6 +1,10 @@
 package com.blog.practiceapi.controller;
 
+import com.blog.practiceapi.domain.Member;
 import com.blog.practiceapi.repository.MemberRepository;
+import com.blog.practiceapi.request.Login;
+import com.blog.practiceapi.request.Sign;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,20 +55,35 @@ class AuthorizationControllerTest {
     }
 
     @Test
-    @DisplayName("스프링 시큐리티 로그인 폼 테스트")
-    void jwt_login_test() throws Exception {
+    @DisplayName("인증 컨트롤러 로그인 폼 테스트")
+    void security_login_test() throws Exception {
         //given
         String username = "psyduck";
         String password = "1234";
         String remember = "1";
 
+        Sign sign = Sign.builder()
+                .name("psyduck")
+                .email("aaaa@naver.com")
+                .password("asdf")
+                .build();
+
+        String json = new ObjectMapper().writeValueAsString(sign);
+
+        mockMvc.perform(post("/auth/sign")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
         
         //expected
+
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .content(buildUrlEncodedFormEntity(
-                                "username", "psyduck",
-                                "password", "1234",
+                                "username", "aaaa@naver.com",
+                                "password", "asdf",
                                 "remember", "1"
                         )))
                 .andExpect(status().isOk())
@@ -76,9 +95,25 @@ class AuthorizationControllerTest {
 
 
     @Test
-    @DisplayName("인증 Resolver 테스트")
-    void resolver_test() throws Exception {
+    @DisplayName("인증 컨트롤러 회원가입 테스트")
+    void security_sign_test() throws Exception {
         //given
+        Sign sign = Sign.builder()
+                .name("psyduck")
+                .email("aaaa@naver.com")
+                .password("asdf")
+                .build();
+
+        String json = new ObjectMapper().writeValueAsString(sign);
+
+        //expected
+
+        mockMvc.perform(post("/auth/sign")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+                )
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print());
 
     }
 

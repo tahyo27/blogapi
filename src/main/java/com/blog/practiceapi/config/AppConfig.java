@@ -9,6 +9,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 @Configuration
 public class AppConfig {
 
@@ -34,7 +36,7 @@ public class AppConfig {
     }
 
     @Bean
-    public AuthorizationService authorizationService(MemberRepository memberRepository) {
-        return new AuthorizationServiceImpl(memberRepository);
+    public AuthorizationService authorizationService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+        return new AuthorizationServiceImpl(memberRepository, passwordEncoder);
     }
 }
