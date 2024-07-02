@@ -15,13 +15,13 @@ public class AuthorizationServiceImpl implements AuthorizationService{
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     @Override
     public void sign(Sign sign) {
         Optional<Member> memberOptional = memberRepository.findByEmail(sign.getEmail());
         if(memberOptional.isPresent()) {
             throw new AlreadyExistEmail();
         }
+
         String encryptedPassword = passwordEncoder.encode(sign.getPassword());
 
         Member member = Member.builder()

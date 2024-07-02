@@ -60,7 +60,6 @@ class AuthorizationControllerTest {
         //given
         String username = "psyduck";
         String password = "1234";
-        String remember = "1";
 
         Sign sign = Sign.builder()
                 .name("psyduck")
@@ -83,8 +82,7 @@ class AuthorizationControllerTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .content(buildUrlEncodedFormEntity(
                                 "username", "aaaa@naver.com",
-                                "password", "asdf",
-                                "remember", "1"
+                                "password", "asdf"
                         )))
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());

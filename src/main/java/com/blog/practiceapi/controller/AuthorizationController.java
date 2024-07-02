@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthorizationController {
     private final AuthorizationService authorizationService;
 
-    @GetMapping("/auth/login")
+    @PostMapping("/auth/login")
     public String login() {
         return "로그인 페이지";
     }
