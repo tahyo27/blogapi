@@ -8,14 +8,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
-@Setter
+@Getter
 @ConfigurationProperties(prefix = "myblog")
 public class StrDataConfig {
 
     private String jwtStrKey;
-    public String adminEmail;
+    private String adminEmail;
 
-    public SecretKey secretKey() {
-        return Keys.hmacShaKeyFor(Base64.getDecoder().decode(this.jwtStrKey));
-    }
 }

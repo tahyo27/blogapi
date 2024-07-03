@@ -89,7 +89,7 @@ public class WebSecurityConfig {
             Member member = memberRepository.findByEmail(username) //email을 유저네임으로 사용
                     .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다"));
 
-            String role = member.getEmail().equals(strDataConfig.adminEmail) ? "ADMIN" : "USER";
+            String role = member.getEmail().equals(strDataConfig.getAdminEmail()) ? "ADMIN" : "USER";
             return new User(member.getEmail(), member.getPassword(), List.of(new SimpleGrantedAuthority(role)));
         };
     }

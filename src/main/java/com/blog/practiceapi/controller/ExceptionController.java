@@ -33,6 +33,7 @@ public class ExceptionController {
                 .msg(e.getMessage())
                 .validationError(e.getValidationError())
                 .build();
+
         log.info(">>>>>>에러리스폰스 테스트 = {}", errorResponse.toString());
         return ResponseEntity.status(stCode)
                 .body(errorResponse);

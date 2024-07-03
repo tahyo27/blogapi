@@ -21,6 +21,6 @@ server:
   port: 8072
 
 myblog:
-  jwtStrkey: "6YehYF5iMhiqa+aNkhs69LWrPFwK/H+kJ4xuV5ndfAc="
+  jwtStrkey: "qwerasdKDJFIEONqweriahsdfjasjdERRERqsfhgkop"
   adminEmail: "tahyo27@gmail.com"
 
