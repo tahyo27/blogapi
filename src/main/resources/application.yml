@@ -21,6 +21,6 @@ server:
   port: 8072
 
 myblog:
-  jwtStrkey: "qwerasdKDJFIEONqweriahsdfjasjdERRERqsfhgkop"
-  adminEmail: "tahyo27@gmail.com"
+  strKey: "qwerasdKDJFIEONqweriahsdfjasjdERRERqsfhgkop"
+  myEmail: "tahyo27@gmail.com"
 

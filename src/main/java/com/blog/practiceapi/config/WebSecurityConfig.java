@@ -1,8 +1,10 @@
 package com.blog.practiceapi.config;
 
 import com.blog.practiceapi.domain.Member;
+import com.blog.practiceapi.jwt.JwtUtil;
 import com.blog.practiceapi.jwt.LoginFilter;
 import com.blog.practiceapi.repository.MemberRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,16 +27,20 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.List;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final StrDataConfig strDataConfig;
-
-    public WebSecurityConfig(AuthenticationConfiguration authenticationConfiguration, StrDataConfig strDataConfig) {
+    private final JwtUtil jwtUtil;
+    private final MemberRepository memberRepository;
+    public WebSecurityConfig(AuthenticationConfiguration authenticationConfiguration, StrDataConfig strDataConfig, JwtUtil jwtUtil, MemberRepository memberRepository) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.strDataConfig = strDataConfig;
+        this.jwtUtil = jwtUtil;
+        this.memberRepository = memberRepository;
     }
 
     @Bean
@@ -64,7 +70,7 @@ public class WebSecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable) //JWT 인증 사용할거기 때문에 폼로그인 및 http베이직 디스에이블
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 시큐리티가 세션 사용 X
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class); //user 인증부분에 넣을거라 at
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, userDetailsService()), UsernamePasswordAuthenticationFilter.class); //user 인증부분에 넣을거라 at
 
 //                .formLogin((formLogin) ->
 //                        formLogin
@@ -84,12 +90,14 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(MemberRepository memberRepository) {
+    public UserDetailsService userDetailsService() {
+        log.info(">>>>>>>>>>>>>>>>>> userDetailsService 호출 유무 체크");
         return username -> {
             Member member = memberRepository.findByEmail(username) //email을 유저네임으로 사용
                     .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다"));
-
-            String role = member.getEmail().equals(strDataConfig.getAdminEmail()) ? "ADMIN" : "USER";
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>> 멤버 이메일 가져오기 {} strDatacConfig이메일 {}", member.getEmail(), strDataConfig.getMyEmail());
+            String role = member.getEmail().equals(strDataConfig.getMyEmail()) ? "ROLE_ADMIN" : "ROLE_USER";
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>> 사용자 role 체크 : {}", role);
             return new User(member.getEmail(), member.getPassword(), List.of(new SimpleGrantedAuthority(role)));
         };
     }

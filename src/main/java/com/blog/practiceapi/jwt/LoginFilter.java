@@ -9,6 +9,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -16,10 +19,14 @@ import java.io.IOException;
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
 
-    public LoginFilter(AuthenticationManager authenticationManager) {
+    public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserDetailsService userDetailsService) {
         setFilterProcessesUrl("/auth/login"); // /login에서 변경
         this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -36,6 +43,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
         log.info(">>>>>>>>>>>>>>>>> successfulAuthentication");
+
+        UserDetails user = userDetailsService.loadUserByUsername(obtainUsername(request));
+        String userName = user.getUsername();
+        String userAuth = user.getAuthorities().toString();
+        log.info(">>>>>>>>>>>>>>>>> UserDetails user {}", user);
+
+        log.info(">>>>>>>>>>>>>>>>>>>>> username : {}, >>>>>>>>>>>>> userAuth : {}", userName, userAuth);
     }
 
     @Override

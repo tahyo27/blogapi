@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 
-@EnableConfigurationProperties(StrDataConfig.class)
+
 @SpringBootApplication
 public class PracticeapiApplication {
 	public static void main(String[] args) {

@@ -3,22 +3,22 @@ package com.blog.practiceapi.jwt;
 import com.blog.practiceapi.config.StrDataConfig;
 import com.blog.practiceapi.exception.JwtNotFoundException;
 import io.jsonwebtoken.Jwts;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
 
+@Component
 public class JwtUtil {
     private final SecretKey secretKey;
-    private StrDataConfig strDataConfig;
 
-    public JwtUtil() {
-        String jwtStrKey = Optional.ofNullable(strDataConfig.getJwtStrKey())
+    public JwtUtil(StrDataConfig strDataConfig) {
+        String jwtStrKey = Optional.ofNullable(strDataConfig.getStrKey())
                 .orElseThrow(JwtNotFoundException::new);
         this.secretKey = new SecretKeySpec(jwtStrKey
                 .getBytes(StandardCharsets.UTF_8),
