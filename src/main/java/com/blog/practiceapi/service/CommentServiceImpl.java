@@ -14,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentServiceImpl implements CommentService{
 
     private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
-
     @Override
     @Transactional
     public void write(Long postId, CreateComment commentRequest) {

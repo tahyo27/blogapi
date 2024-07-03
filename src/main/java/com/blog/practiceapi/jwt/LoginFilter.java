@@ -24,7 +24,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        log.info(">>>>>>>>>>>>>>>>>>>{}", obtainUsername(request));
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> {}", obtainUsername(request));
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(obtainUsername(request), //유저네임
                         obtainPassword(request), //패스워드
@@ -35,13 +35,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-
+        log.info(">>>>>>>>>>>>>>>>> successfulAuthentication");
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
-
+        log.info(">>>>>>>>>>>>>>>> unsuccessfulAuthentication");
     }
 
 }

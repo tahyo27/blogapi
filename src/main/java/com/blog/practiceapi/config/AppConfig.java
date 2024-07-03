@@ -31,8 +31,8 @@ public class AppConfig {
     }
 
     @Bean
-    public CommentService commentService(PostRepository postRepository, CommentRepository commentRepository) {
-        return new CommentServiceImpl(postRepository, commentRepository);
+    public CommentService commentService(PostRepository postRepository) {
+        return new CommentServiceImpl(postRepository);
     }
 
     @Bean

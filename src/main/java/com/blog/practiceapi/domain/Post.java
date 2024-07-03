@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @ToString
+@NoArgsConstructor
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

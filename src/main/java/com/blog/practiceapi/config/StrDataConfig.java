@@ -13,6 +13,7 @@ import java.util.Base64;
 public class StrDataConfig {
 
     private String jwtStrKey;
+    public String adminEmail;
 
     public SecretKey secretKey() {
         return Keys.hmacShaKeyFor(Base64.getDecoder().decode(this.jwtStrKey));

@@ -22,4 +22,5 @@ server:
 
 myblog:
   jwtStrkey: "6YehYF5iMhiqa+aNkhs69LWrPFwK/H+kJ4xuV5ndfAc="
+  adminEmail: "tahyo27@gmail.com"
 
