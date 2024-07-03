@@ -46,13 +46,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                                             Authentication authResult) throws IOException, ServletException {
         log.info(">>>>>>>>>>>>>>>>> successfulAuthentication");
 
-        UserDetails user = userDetailsService.loadUserByUsername(obtainUsername(request));
-        String userName = user.getUsername();
-        String userAuth = user.getAuthorities().toString();
+        UserDetails user = (UserDetails) authResult.getPrincipal();
+
         log.info(">>>>>>>>>>>>>>>>> UserDetails user {}", user);
-
-        log.info(">>>>>>>>>>>>>>>>>>>>> username : {}, >>>>>>>>>>>>> userAuth : {}", userName, userAuth);
-
         String jwtToken = jwtUtil.createJwt(user.getUsername(),
                 user.getAuthorities().toString(), 1800L);
         response.addHeader("Authorization", "Bearer " + jwtToken);

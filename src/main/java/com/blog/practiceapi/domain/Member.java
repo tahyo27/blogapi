@@ -24,6 +24,7 @@ public class Member {
     private String name;
 
     private String password;
+
     @Builder
     public Member(String email, String name, String password) {
         this.email = email;
