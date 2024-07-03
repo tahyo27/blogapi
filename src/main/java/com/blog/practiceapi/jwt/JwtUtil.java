@@ -10,6 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 
@@ -43,15 +44,17 @@ public class JwtUtil {
         return Jwts.parser().verifyWith(secretKey).build()
                 .parseSignedClaims(token)
                 .getPayload().getExpiration()
-                .before(Date.from(Instant.from(LocalDateTime.now())));
+                .before(Date.from(LocalDateTime.now()
+                        .atZone(ZoneId.systemDefault()).toInstant()));
     }
 
     public String createJwt(String username, String role, Long expired) {
         return Jwts.builder()
                 .claim("username", username)
                 .claim("role", role)
-                .issuedAt(Date.from(Instant.from(LocalDateTime.now())))
-                .expiration(Date.from(Instant.from(LocalDateTime.now().plusSeconds(expired))))
+                .issuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
+                .expiration(Date.from(LocalDateTime.now().plusSeconds(expired)
+                        .atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(secretKey)
                 .compact();
     }

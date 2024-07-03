@@ -1,5 +1,7 @@
 package com.blog.practiceapi.jwt;
 
+import com.blog.practiceapi.exception.InvalidLogInException;
+import com.blog.practiceapi.response.ErrorResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,12 +52,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         log.info(">>>>>>>>>>>>>>>>> UserDetails user {}", user);
 
         log.info(">>>>>>>>>>>>>>>>>>>>> username : {}, >>>>>>>>>>>>> userAuth : {}", userName, userAuth);
+
+        String jwtToken = jwtUtil.createJwt(user.getUsername(),
+                user.getAuthorities().toString(), 1800L);
+        response.addHeader("Authorization", "Bearer " + jwtToken);
+
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
         log.info(">>>>>>>>>>>>>>>> unsuccessfulAuthentication");
+        throw new InvalidLogInException();
     }
 
 }
