@@ -25,11 +25,14 @@ public class Member {
 
     private String password;
 
+    private String role; // todo 롤 형식 어떻게 할지 생각
+
     @Builder
-    public Member(String email, String name, String password) {
+    public Member(String email, String name, String password, String role) {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.role = role;
     }
 
 }

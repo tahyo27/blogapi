@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
     private final StrDataConfig strDataConfig;
 
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
+    public void addCorsMappings(CorsRegistry registry) { // todo 시큐리티 쪽으로 합칠 예정
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:5173");
     }

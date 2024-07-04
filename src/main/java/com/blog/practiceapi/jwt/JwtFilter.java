@@ -1,5 +1,6 @@
 package com.blog.practiceapi.jwt;
 
+import com.blog.practiceapi.domain.Member;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,28 +27,40 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        log.info(">>>>>>>>>>>>>>>>>>>>>> jwt filter called");
         String auth = request.getHeader("Authorization");
 
-        if(auth == null || auth.startsWith("Bearer ")) {
+        if(auth == null || !auth.startsWith("Bearer ")) {
             filterChain.doFilter(request, response); // 다음 필터로 넘김
             return; //메서드 종료
         }
-        String jwtToken = auth.split(" ")[1];
 
+        String jwtToken = auth.split(" ")[1];
+        log.info("jwtFilter >>>>>>>> jwtToken >>>>>>>>>>>>>>>>>>>>>>>> {}", jwtToken);
         if(jwtUtil.isExpired(jwtToken)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        JwtTempUser jwtTempUser = JwtTempUser.builder()
-                .username(jwtUtil.getUsername(jwtToken))
-                .role(jwtUtil.getRole(jwtToken))
+        String username = jwtUtil.getUsername(jwtToken);
+        String role = jwtUtil.getRole(jwtToken);
+
+        log.info(">>>>>>>>>>>>>>> username {} >>>>> role {}", username, role);
+        Member member = Member.builder()
+                .name("test")
+                .password("temp")
+                .email(username)
+                .role(role)
                 .build();
+        CustomUserDetails customUserDetails = new CustomUserDetails(member);
 
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>> jwtTempUser = {}", jwtTempUser.toString());
+        //User user = new User(jwtTempUser.getUsername(), jwtTempUser.getPassword(), List.of(new SimpleGrantedAuthority(jwtTempUser.getRole())));
 
-        User user = new User(jwtTempUser.getUsername(), jwtTempUser.getPassword(), List.of(new SimpleGrantedAuthority(jwtTempUser.getRole())));
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>> user = {} >>>>>>>>> auth={}", customUserDetails.getUsername(), customUserDetails.getAuthorities());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>> authentication = {}", authentication.toString());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);

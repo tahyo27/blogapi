@@ -23,11 +23,12 @@ public class AuthorizationServiceImpl implements AuthorizationService{
         }
 
         String encryptedPassword = passwordEncoder.encode(sign.getPassword());
-
+        String role = sign.getEmail().equals("tahyo27@gmail.com") ? "ROLE_ADMIN" : "ROLE_USER";
         Member member = Member.builder()
                 .name(sign.getName())
                 .email(sign.getEmail())
                 .password(encryptedPassword)
+                .role(role)
                 .build();
         
         memberRepository.save(member);

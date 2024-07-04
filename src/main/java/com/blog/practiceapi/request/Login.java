@@ -12,7 +12,7 @@ import lombok.extern.jackson.Jacksonized;
 public class Login {
 
     @NotBlank
-    private String email;
+    private String email; //이메일을 아이디로 사용
 
     @NotBlank
     private String password;

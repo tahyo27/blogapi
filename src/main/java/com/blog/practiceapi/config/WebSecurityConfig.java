@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -62,46 +63,22 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf((auth) -> auth.disable())
                 .authorizeHttpRequests((authRequests) -> authRequests
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/sign").permitAll()
+                        .requestMatchers("/authTest").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable) //JWT 인증 사용할거기 때문에 폼로그인 및 http베이직 디스에이블
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 시큐리티가 세션 사용 X
+
+                 // 시큐리티가 세션 사용 X
                 .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, userDetailsService()), UsernamePasswordAuthenticationFilter.class); //user 인증부분에 넣을거라 at
-
-//                .formLogin((formLogin) ->
-//                        formLogin
-//                                .loginPage("/auth/login")
-//                                .loginProcessingUrl("/auth/login")
-//                                .usernameParameter("username")
-//                                .passwordParameter("password")
-//                                .successForwardUrl("/")
-//                )
-
-//                .rememberMe(remember -> remember.rememberMeParameter("remember")
-//                        .alwaysRemember(false)
-//                        .tokenValiditySeconds(1296000)
-//                );
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class) //user 인증부분에 넣을거라 at
+                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
                              // 스프링 6.1부터 메서드 체이닝말고 람다로 해야함
         return httpSecurity.build();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        log.info(">>>>>>>>>>>>>>>>>> userDetailsService 호출 유무 체크");
-        return username -> {
-            Member member = memberRepository.findByEmail(username) //email을 유저네임으로 사용
-                    .orElseThrow(() -> new UsernameNotFoundException(username + "을 찾을 수 없습니다"));
-            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>> 멤버 이메일 가져오기 {} strDatacConfig이메일 {}", member.getEmail(), strDataConfig.getMyEmail());
-            String role = member.getEmail().equals(strDataConfig.getMyEmail()) ? "ADMIN" : "USER";
-            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>> 사용자 role 체크 : {}", role);
-            return new User(member.getEmail(), member.getPassword(), List.of(new SimpleGrantedAuthority(role)));
-        };
     }
 
     @Bean
