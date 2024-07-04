@@ -20,7 +20,6 @@ public class JwtUtil {
     private final SecretKey secretKey;
 
     public JwtUtil(StrDataConfig strDataConfig) {
-        log.info(">>>>>>>>>>>>>>>>>>>> JwtUTIL 생성 = {}", strDataConfig.toString());
         String jwtStrKey = Optional.ofNullable(strDataConfig.getStrKey())
                 .orElseThrow(JwtNotFoundException::new);
         this.secretKey = new SecretKeySpec(jwtStrKey

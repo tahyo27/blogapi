@@ -1,33 +1,25 @@
 package com.blog.practiceapi.config;
 
-import com.blog.practiceapi.domain.Member;
 import com.blog.practiceapi.jwt.JwtFilter;
 import com.blog.practiceapi.jwt.JwtUtil;
 import com.blog.practiceapi.jwt.LoginFilter;
-import com.blog.practiceapi.repository.MemberRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import java.util.List;
 
 @Slf4j
 @Configuration
@@ -35,14 +27,12 @@ import java.util.List;
 public class WebSecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final StrDataConfig strDataConfig;
+    private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
-    private final MemberRepository memberRepository;
-    public WebSecurityConfig(AuthenticationConfiguration authenticationConfiguration, StrDataConfig strDataConfig, JwtUtil jwtUtil, MemberRepository memberRepository) {
+    public WebSecurityConfig(AuthenticationConfiguration authenticationConfiguration, ObjectMapper objectMapper, JwtUtil jwtUtil) {
         this.authenticationConfiguration = authenticationConfiguration;
-        this.strDataConfig = strDataConfig;
+        this.objectMapper = objectMapper;
         this.jwtUtil = jwtUtil;
-        this.memberRepository = memberRepository;
     }
 
     @Bean
@@ -75,7 +65,7 @@ public class WebSecurityConfig {
 
                  // 시큐리티가 세션 사용 X
                 .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class) //user 인증부분에 넣을거라 at
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class) //user 인증부분에 넣을거라 at
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
                              // 스프링 6.1부터 메서드 체이닝말고 람다로 해야함
         return httpSecurity.build();

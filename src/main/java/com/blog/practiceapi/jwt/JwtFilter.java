@@ -42,7 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
+        //토큰 파싱
         String username = jwtUtil.getUsername(jwtToken);
         String role = jwtUtil.getRole(jwtToken);
 
@@ -53,6 +53,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 .email(username)
                 .role(role)
                 .build();
+
         CustomUserDetails customUserDetails = new CustomUserDetails(member);
 
         //User user = new User(jwtTempUser.getUsername(), jwtTempUser.getPassword(), List.of(new SimpleGrantedAuthority(jwtTempUser.getRole())));
