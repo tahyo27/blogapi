@@ -17,6 +17,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
+
     @PostMapping("/posts/{postId}/comments")
     public void write(@PathVariable(value = "postId") Long postId, @RequestBody @Valid CreateComment commentRequest) {
         commentService.write(postId, commentRequest);

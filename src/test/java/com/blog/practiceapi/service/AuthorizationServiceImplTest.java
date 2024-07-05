@@ -59,7 +59,7 @@ class AuthorizationServiceImplTest {
 
         memberRepository.save(member);
         //when
-        Member findMeber = memberRepository.findByEmail("dddd@naver.com").orElseThrow(() -> new NullPointerException());
+        Member findMeber = memberRepository.findByEmail("dddd@naver.com").orElseThrow(NullPointerException::new);
 
 
         //then

@@ -1,13 +1,16 @@
 package com.blog.practiceapi.jwt;
 
 import com.blog.practiceapi.exception.InvalidLogInException;
+import com.blog.practiceapi.exception.InvalidRequest;
 import com.blog.practiceapi.request.Login;
+import com.blog.practiceapi.response.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.util.encoders.UTF8;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,7 +53,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             return authenticationManager.authenticate(authToken);
 
         } catch (IOException e) {
-            throw new InvalidLogInException(); //todo 예외처리 만들어둔 로그인 익셉션으로 할지 다른것 만들지 고민
+            log.error("json 잘못됨");
+            throw new InvalidRequest();
         }
     }
 
@@ -62,7 +66,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String username = customUserDetails.getUsername();
         log.info(">>>>>>>>>>>>>>>>> UserDetails username {}", username);
-        Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
+        Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();  //todo 간소화 고민
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
@@ -78,7 +82,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
         log.info(">>>>>>>>>>>>>>>> unsuccessfulAuthentication");
-        throw new InvalidLogInException();
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code("401")
+                .msg("아이디/비밀번호가 잘못못되었습니다")
+                .build();
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");     //todo 간소화할 수 있을 지 고민
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 
 }

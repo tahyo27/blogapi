@@ -9,6 +9,7 @@ import com.blog.practiceapi.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,18 +22,13 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/test")
-    public String test() {
-
-        return "test임";
-    }
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/posts")
-    public void writePost(@RequestBody @Valid CreatePost postRequest, @RequestHeader String authorization) throws Exception {
-        if(authorization.equals("psyduck")) {
-            postRequest.isValid();
-            postService.write(postRequest);
-        }
+    public void writePost(@RequestBody @Valid CreatePost postRequest) throws Exception {
+        postRequest.isValid();
+        postService.write(postRequest);
     }
+
     @GetMapping("/posts/{postId}")
     public PostResponse getPost(@PathVariable(name = "postId") Long postId) {
         return postService.get(postId);
@@ -44,11 +40,13 @@ public class PostController {
         return postService.getList(searchPagingPost);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/posts/{postId}")
     public void edit(@PathVariable(name = "postId") Long postId, @RequestBody EditPost editRequest) {
         postService.editPost(postId, editRequest);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/posts/{postId}")
     public void delete(@PathVariable(name = "postId") Long postId) {
         postService.delete(postId);

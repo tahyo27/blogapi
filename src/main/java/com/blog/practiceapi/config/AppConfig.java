@@ -36,7 +36,7 @@ public class AppConfig {
     }
 
     @Bean
-    public AuthorizationService authorizationService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
-        return new AuthorizationServiceImpl(memberRepository, passwordEncoder);
+    public AuthorizationService authorizationService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, StrDataConfig strDataConfig) {
+        return new AuthorizationServiceImpl(memberRepository, passwordEncoder, strDataConfig);
     }
 }
