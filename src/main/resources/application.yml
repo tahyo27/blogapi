@@ -33,7 +33,7 @@ resilience4j.ratelimiter:
   instances:
     backendA:
       limitForPeriod: 1
-      limitRefreshPeriod: 30s
+      limitRefreshPeriod: 10s
       timeoutDuration: 0
 
 

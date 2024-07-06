@@ -5,11 +5,14 @@ import com.blog.practiceapi.exception.NotBlankException;
 import com.blog.practiceapi.response.ErrorResponse;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Arrays;
 
 @Slf4j
 @ControllerAdvice
@@ -25,7 +28,6 @@ public class ExceptionController {
     @ResponseBody
     @ExceptionHandler(BlogException.class)
     public ResponseEntity<ErrorResponse> BlogException(BlogException e) {
-        log.info("호출 확인입니다 exception called");
         int stCode = e.getStatusCode();
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -40,11 +42,16 @@ public class ExceptionController {
     }
 
     @ExceptionHandler(RequestNotPermitted.class)
-    public String ratelimitException(RequestNotPermitted e) {
-        log.info(">>>>>>>>>>>>>> RLEXCEPTION {}", e.getMessage());
-        log.info(">>>>>>>>>>>>>> RLEXCEPTION {}", e.getLocalizedMessage());
-        log.info(">>>>>>>>>>>>>> RLEXCEPTION {}", e.toString());
+    public ResponseEntity<ErrorResponse> requestLimitException(RequestNotPermitted e) {
+        HttpStatus stCode = HttpStatus.TOO_MANY_REQUESTS;
+        String message = "현재 요청이 많습니다 잠시 후 다시 시도하세요";
 
-        return "익셉션";
+        ErrorResponse errorResponse = ErrorResponse.builder() //todo webmvcconfig에서 예외처리 리졸버 설정해서 blogException으로 다 받을 수 있게 할지 고민
+                .code(String.valueOf(stCode))
+                .msg(message)
+                .build();
+
+        return ResponseEntity.status(stCode)
+                .body(errorResponse);
     }
 }
