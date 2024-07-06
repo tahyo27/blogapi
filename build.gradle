@@ -53,7 +53,8 @@ dependencies {
 	//Spring REST Docs
 	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-
+	//mariadb
+	//implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.3'
 	//H2
 	runtimeOnly 'com.h2database:h2'
 
@@ -70,6 +71,10 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
 	implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+
+	//resilience4j
+	implementation "io.github.resilience4j:resilience4j-spring-boot3:2.2.0"
+
 
 
 	//test
@@ -97,3 +102,6 @@ bootJar {
 	}
 
 }
+
+
+
