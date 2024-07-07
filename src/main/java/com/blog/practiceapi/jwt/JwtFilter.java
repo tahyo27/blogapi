@@ -43,7 +43,6 @@ public class JwtFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(jwtToken);
         String role = jwtUtil.getRole(jwtToken);
 
-        log.info(">>>>>>>>>>>>>>> username {} >>>>> role {}", username, role);
         Member member = Member.builder()
                 .name("test")
                 .password("temp")

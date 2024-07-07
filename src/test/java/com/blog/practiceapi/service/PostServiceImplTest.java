@@ -68,7 +68,7 @@ class PostServiceImplTest {
         postRepository.save(testPost);
 
         //when
-        Post post = postRepository.findById(testPost.getId()).orElseThrow(() -> new IllegalStateException());
+        Post post = postRepository.findById(testPost.getId()).orElseThrow(IllegalStateException::new);
 
         //then
         assertNotNull(post);
@@ -86,7 +86,7 @@ class PostServiceImplTest {
         postRepository.save(testPost);
 
         //when
-        Post post = postRepository.findById(testPost.getId()).orElseThrow(() -> new IllegalStateException());
+        Post post = postRepository.findById(testPost.getId()).orElseThrow(PostNotFound::new);
 
         //then
         assertNotNull(post);
