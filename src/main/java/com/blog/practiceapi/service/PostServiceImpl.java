@@ -59,15 +59,12 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(PostNotFound::new);
 
         PostEditor.PostEditorBuilder builder = post.toPostEditor();
-        log.info("builder={}", builder);
         PostEditor postEditor = builder
                 .title(editPost.getTitle())
                 .content(editPost.getContent())
                 .build();
-        log.info("postEditor={}", postEditor);
 
         post.edit(postEditor);
-        log.info("changed_post={}", post);
     }
 
     @Override

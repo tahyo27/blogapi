@@ -25,7 +25,7 @@ public class Member {
 
     private String password;
 
-    private String role; // todo 롤 형식 어떻게 할지 생각
+    private String role;
 
     @Builder
     public Member(String email, String name, String password, String role) {

@@ -32,11 +32,12 @@ public class CreatePost {
     }
 
     public void isValid() {
+        String message = "비속어가 포함되어있습니다";
         for(String badWord : BAD_WORDS) {
             if(title.contains(badWord)) {
-                throw new InvalidRequest(Map.of("title", "비속어가 포함되어 있습니다."));
+                throw new InvalidRequest(Map.of("title", message));
             } else if(content.contains(badWord)) {
-                throw new InvalidRequest(Map.of("content", "비속어가 포함되어 있습니다."));
+                throw new InvalidRequest(Map.of("content", message));
             }
         }
     }

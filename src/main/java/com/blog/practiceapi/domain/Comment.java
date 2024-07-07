@@ -24,7 +24,7 @@ public class Comment {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private  Post post;
 

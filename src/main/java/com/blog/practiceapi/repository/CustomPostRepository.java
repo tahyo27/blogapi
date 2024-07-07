@@ -9,4 +9,6 @@ public interface CustomPostRepository {
 
     List<Post> getPagingList(SearchPagingPost search);
 
+    List<Post> getCursorPaging(Long cursor);
+
 }

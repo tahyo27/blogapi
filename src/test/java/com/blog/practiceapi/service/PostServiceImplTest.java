@@ -220,6 +220,17 @@ class PostServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("쿼리 테스트")
+    void post_select_test() {
+        //given
+
+
+        //when
+
+        //then
+    }
+
 
 
 

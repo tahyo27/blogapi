@@ -15,7 +15,7 @@ public class SearchPagingPost {
     private final int size;
 
     @Builder
-    public SearchPagingPost(Integer page, Integer size) {
+    public SearchPagingPost(Integer page, Integer size) { //todo 페이징 조건처리 페이징 오프셋 없앨지 생각
         this.page = (page == null || page < 1)? 1 : page;
         this.size = (size == null || size < 10 || size > MAX_PAGE_SIZE)? 10 : size;
     }

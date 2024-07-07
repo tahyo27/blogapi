@@ -1,8 +1,13 @@
 package com.blog.practiceapi.controller;
 
 
+import com.blog.practiceapi.domain.Post;
+import com.blog.practiceapi.repository.MemberRepository;
+import com.blog.practiceapi.repository.PostRepository;
+import com.blog.practiceapi.request.SearchPagingPost;
 import com.blog.practiceapi.request.Sign;
 import com.blog.practiceapi.response.ErrorResponse;
+import com.blog.practiceapi.response.PostResponse;
 import com.blog.practiceapi.service.AuthorizationService;
 import io.github.resilience4j.bulkhead.BulkheadFullException;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
@@ -17,13 +22,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AuthorizationController {
     private final AuthorizationService authorizationService;
+    private final PostRepository postRepository;
 
 
     @GetMapping("/authTest")
@@ -40,28 +48,37 @@ public class AuthorizationController {
     }
 
 
+    @RateLimiter(name = "sign")
     @PostMapping("/auth/sign")
     public void sign(@RequestBody Sign sign) {
         authorizationService.sign(sign);
     }
 
 
+    @GetMapping("/testmyblog2")
+    public void test2() { // 쿼리 튜닝 및 쿼리 테스트
+        SearchPagingPost searchPagingPost = SearchPagingPost.builder() // 페이지 깊어질수록 시간 늘어남
+                .page(10000)
+                .size(100)
+                .build();
+        long start = System.currentTimeMillis();
+        List<PostResponse> postResponses = postRepository.getPagingList(searchPagingPost)
+                .stream().map(PostResponse::new).toList();
+        long end = System.currentTimeMillis();
 
-    @GetMapping("/testmyblog")
-    @RateLimiter(name = "backendA")
-    public String test2() {
-        
-        return "테스트임";
+        log.info(">>>>>>>>>>>>>>>>>>>>" + (end - start));
     }
 
-//    public ResponseEntity<ErrorResponse> fallbacktest(String param1, Throwable t) {
-//        log.info("asdfasdf" + t.toString());
-//        log.info(">>>>>>>>>>>>signFallback 콜");
-//        ErrorResponse errorResponse = ErrorResponse.builder()
-//                .code("429")
-//                .msg("한꺼번에 너무 많은 요청입니다.")
-//                .build();
-//        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(errorResponse);
-//    }
+    @GetMapping("/testmyblog")
+    public void test3() { // 쿼리 튜닝 및 쿼리 테스트
+        Long cursor = 10000L;
+        long start = System.currentTimeMillis();
+        List<PostResponse> postResponses = postRepository.getCursorPaging(cursor)
+                .stream().map(PostResponse::new).toList();
+        long end = System.currentTimeMillis();
+        log.info(">>>>>>>>>>>>>>>>>>>>" + (end - start));
+
+    }
+
 
 }
