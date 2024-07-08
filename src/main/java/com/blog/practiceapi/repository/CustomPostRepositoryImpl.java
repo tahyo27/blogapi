@@ -18,7 +18,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Post> getPagingList(SearchPagingPost search) {
+    public List<Post> getPagingList(SearchPagingPost search) { //todo 댓글에서 쓸지 고민
         return jpaQueryFactory.selectFrom(QPost.post)
                 .limit(search.getSize())
                 .offset(search.getOffset())
@@ -27,7 +27,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
     }
 
     @Override
-    public List<Post> getCursorPaging(Long cursor) {
+    public List<Post> getCursorPaging(Long postId) {
 
 
         return jpaQueryFactory.select(Projections.fields(Post.class,
@@ -35,16 +35,16 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
                         QPost.post.content
                         ))
                 .from(QPost.post)
-                .where(ltCursor(cursor))
+                .where(ltCursor(postId))
                 .orderBy(QPost.post.id.desc())
-                .limit(100)
+                .limit(10)
                 .fetch();
     }
-    private BooleanExpression ltCursor(Long cursor) {
-        if(cursor == null) {
+    private BooleanExpression ltCursor(Long postId) {
+        if(postId == null) {
             return null;
         }
-        return QPost.post.id.lt(cursor);
+        return QPost.post.id.lt(postId);
     }
 
 

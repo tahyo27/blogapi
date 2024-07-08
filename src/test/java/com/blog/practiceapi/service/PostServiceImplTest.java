@@ -7,6 +7,7 @@ import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.request.EditPost;
 import com.blog.practiceapi.request.SearchPagingPost;
 import com.blog.practiceapi.response.PostResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,15 +15,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Slf4j
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 class PostServiceImplTest {
 
@@ -203,6 +208,7 @@ class PostServiceImplTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("존재 않는 포스트 삭제 ")
     void post_delete_exception_test() {
         //given
@@ -220,15 +226,40 @@ class PostServiceImplTest {
 
     }
 
+//    @Test
+//    @DisplayName("쿼리 테스트")
+//    void post_select_test() {
+//        //given
+//
+//
+//        //when
+//
+//        //then
+//    }
     @Test
-    @DisplayName("쿼리 테스트")
-    void post_select_test() {
+    @DisplayName("커서 페이징 테스트")
+    void cursor_paging_test() {
         //given
+        List<Post> posts = IntStream.range(1, 21).mapToObj(
+                items -> Post.builder()
+                        .title("제목" + items)
+                        .content("내용" + items)
+                        .build()).toList();
 
+        postRepository.saveAll(posts);
 
         //when
+        List<Post> getLists = postRepository.getCursorPaging(null);
+        log.info(">>>>>>>>>>>>>>>>>{}", getLists.toString());
+        
+
 
         //then
+        assertEquals(10L, getLists.size());
+        assertThat(getLists.get(0).getTitle()).isEqualTo("제목20");
+        assertThat(getLists.get(0).getContent()).isEqualTo("내용20");
+        
+        
     }
 
 

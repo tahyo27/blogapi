@@ -57,26 +57,26 @@ public class AuthorizationController {
 
     @GetMapping("/testmyblog2")
     public void test2() { // 쿼리 튜닝 및 쿼리 테스트
-        SearchPagingPost searchPagingPost = SearchPagingPost.builder() // 페이지 깊어질수록 시간 늘어남
-                .page(10000)
-                .size(100)
-                .build();
-        long start = System.currentTimeMillis();
-        List<PostResponse> postResponses = postRepository.getPagingList(searchPagingPost)
-                .stream().map(PostResponse::new).toList();
-        long end = System.currentTimeMillis();
-
-        log.info(">>>>>>>>>>>>>>>>>>>>" + (end - start));
+//        SearchPagingPost searchPagingPost = SearchPagingPost.builder() // 페이지 깊어질수록 시간 늘어남
+//                .page(10000)
+//                .size(100)
+//                .build();
+//        long start = System.currentTimeMillis();
+//        List<PostResponse> postResponses = postRepository.getPagingList(searchPagingPost)
+//                .stream().map(PostResponse::new).toList();
+//        long end = System.currentTimeMillis();
+//
+//        log.info(">>>>>>>>>>>>>>>>>>>>" + (end - start));
     }
 
     @GetMapping("/testmyblog")
     public void test3() { // 쿼리 튜닝 및 쿼리 테스트
-        Long cursor = 10000L;
-        long start = System.currentTimeMillis();
-        List<PostResponse> postResponses = postRepository.getCursorPaging(cursor)
-                .stream().map(PostResponse::new).toList();
-        long end = System.currentTimeMillis();
-        log.info(">>>>>>>>>>>>>>>>>>>>" + (end - start));
+//        Long cursor = 10000L;
+//        long start = System.currentTimeMillis();
+//        List<PostResponse> postResponses = postRepository.getCursorPaging(cursor)
+//                .stream().map(PostResponse::new).toList();
+//        long end = System.currentTimeMillis();
+//        log.info(">>>>>>>>>>>>>>>>>>>>" + (end - start));
 
     }
 
