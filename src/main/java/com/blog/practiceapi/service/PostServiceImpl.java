@@ -5,8 +5,9 @@ import com.blog.practiceapi.domain.PostEditor;
 import com.blog.practiceapi.exception.PostNotFound;
 import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreatePost;
+import com.blog.practiceapi.request.CursorPaging;
 import com.blog.practiceapi.request.EditPost;
-import com.blog.practiceapi.request.SearchPagingPost;
+import com.blog.practiceapi.request.OffsetPaging;
 import com.blog.practiceapi.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +46,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponse> getList(SearchPagingPost search) {
+    public List<PostResponse> getList(OffsetPaging search) {
         return postRepository.getPagingList(search).stream().map
                 (PostResponse::new)
                 .collect(Collectors.toList());
@@ -72,6 +73,13 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(PostNotFound::new);
         postRepository.delete(post);
+    }
+
+    @Override
+    public List<PostResponse> getListWithCursor(CursorPaging cursorPaging) {
+        return postRepository.getCursorPaging(cursorPaging).stream()
+                .map(PostResponse::new)
+                .toList();
     }
 
 

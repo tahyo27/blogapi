@@ -4,8 +4,9 @@ import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.exception.PostNotFound;
 import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreatePost;
+import com.blog.practiceapi.request.CursorPaging;
 import com.blog.practiceapi.request.EditPost;
-import com.blog.practiceapi.request.SearchPagingPost;
+import com.blog.practiceapi.request.OffsetPaging;
 import com.blog.practiceapi.response.PostResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -21,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -100,8 +100,8 @@ class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("페이징 페이지 조회")
-    void get_post_paging_test() {
+    @DisplayName("오프셋 페이징 페이지 조회")
+    void get_post_offset_paging_test() {
         //given
         List<Post> savePosts = IntStream.range(1, 31)
                         .mapToObj(items -> Post.builder()
@@ -111,9 +111,9 @@ class PostServiceImplTest {
        postRepository.saveAll(savePosts);
 
         //when
-        SearchPagingPost search = SearchPagingPost.builder()
+        OffsetPaging offsetPaging = OffsetPaging.builder()
                 .build();
-        List<PostResponse> posts = postService.getList(search);
+        List<PostResponse> posts = postService.getList(offsetPaging);
 
         //then
 
@@ -248,11 +248,15 @@ class PostServiceImplTest {
 
         postRepository.saveAll(posts);
 
+        CursorPaging cursorPaging = CursorPaging.builder()
+                .cursor(null)
+                .size(10)
+                .build();
+
         //when
-        List<Post> getLists = postRepository.getCursorPaging(null);
+        List<Post> getLists = postRepository.getCursorPaging(cursorPaging);
         log.info(">>>>>>>>>>>>>>>>>{}", getLists.toString());
         
-
 
         //then
         assertEquals(10L, getLists.size());
@@ -260,6 +264,30 @@ class PostServiceImplTest {
         assertThat(getLists.get(0).getContent()).isEqualTo("내용20");
         
         
+    }
+
+    @Test
+    @DisplayName("커서 페이징 남은 포스트 없을때")
+    void paging_empty_post_test() {
+        //given
+        List<Post> posts = IntStream.range(1, 21).mapToObj(
+                items -> Post.builder()
+                        .title("제목" + items)
+                        .content("내용" + items)
+                        .build()).toList();
+
+        postRepository.saveAll(posts);
+
+        CursorPaging cursorPaging = CursorPaging.builder()
+                .cursor(0L)
+                .size(10)
+                .build();
+
+        //when
+        List<Post> getLists = postRepository.getCursorPaging(cursorPaging);
+        log.info(">>>>>>>>>>>>>>>>>{}", getLists.toString());
+
+        assertEquals(0L, getLists.size());
     }
 
 

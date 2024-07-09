@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class Post {
     @Lob
     private String content;
 
+    private LocalDateTime regdate;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
     private final List<Comment> comments = new ArrayList<>();
 
@@ -30,6 +33,7 @@ public class Post {
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
+        this.regdate = LocalDateTime.now();
     }
 
     public PostEditor.PostEditorBuilder toPostEditor() {

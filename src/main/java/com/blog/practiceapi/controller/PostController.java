@@ -1,9 +1,9 @@
 package com.blog.practiceapi.controller;
 
-import com.blog.practiceapi.exception.InvalidRequest;
 import com.blog.practiceapi.request.CreatePost;
+import com.blog.practiceapi.request.CursorPaging;
 import com.blog.practiceapi.request.EditPost;
-import com.blog.practiceapi.request.SearchPagingPost;
+import com.blog.practiceapi.request.OffsetPaging;
 import com.blog.practiceapi.response.PostResponse;
 import com.blog.practiceapi.service.PostService;
 import jakarta.validation.Valid;
@@ -35,9 +35,9 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getList(SearchPagingPost searchPagingPost) {
+    public List<PostResponse> getList(CursorPaging cursorPaging) {
 
-        return postService.getList(searchPagingPost);
+        return postService.getListWithCursor(cursorPaging);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

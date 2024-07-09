@@ -146,7 +146,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("/posts 페이징 테스트")
+    @DisplayName("/posts 커서 페이징 테스트")
     @Transactional
     void controller_get_post_paging_test() throws Exception {
         //given
@@ -160,9 +160,8 @@ class PostControllerTest {
         //expected
 
         mockMvc.perform(get("/posts")
-                                .param("page", "1")
+                                .param("cursor", "")
                                 .param("size", "10")
-                                .param("sort", "id,desc")
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -173,9 +172,9 @@ class PostControllerTest {
                 .andDo(print());
     }
     @Test
-    @DisplayName("/posts 페이지 기본값 테스트")
+    @DisplayName("/posts 페이징 사이즈 제한 테스트")
     @Transactional
-    void controller_get_post_paging_default_test() throws Exception {
+    void controller_get_post_paging_size_test() throws Exception {
         //given
         List<Post> savePosts = IntStream.range(1, 31)
                 .mapToObj(items -> Post.builder()
@@ -187,7 +186,7 @@ class PostControllerTest {
         //expected
 
         mockMvc.perform(get("/posts")
-                        .param("page", "1")
+                        .param("cursor", "")
                         .param("size", "2000")
                         .contentType(MediaType.APPLICATION_JSON)
 
