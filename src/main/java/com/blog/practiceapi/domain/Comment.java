@@ -53,6 +53,7 @@ public class Comment {
 
     public void addChild(Comment child) {
         child.parent = this;
+        child.post = this.post;
         children.add(child);
     }
 }

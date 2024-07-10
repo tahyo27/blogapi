@@ -8,6 +8,8 @@ import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreateComment;
 import com.blog.practiceapi.request.CursorPaging;
 import com.blog.practiceapi.response.CommentResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -67,7 +69,7 @@ class CommentServiceImplTest {
 
     @Test
     @Transactional
-    @DisplayName("댓글 대댓글 테스트")
+    @DisplayName("댓글 대댓글 저장 테스트")
     void comment_reply_test() {
         //given
         Post post = Post.builder()
@@ -82,6 +84,7 @@ class CommentServiceImplTest {
                 .password("할아버지비번")
                 .content("할아버지내용")
                 .build();
+
         post.addComment(parentComment);
 
         Comment childComment = Comment.builder()
@@ -106,22 +109,14 @@ class CommentServiceImplTest {
         //when
         List<Comment> comments = commentRepository.findCommentByPostId(post.getId());
         //then
-//        for(Comment comment : comments) {
-//            log.info(">>>>>>>>>>>>> comments = {}", comment.getParent());
-//            log.info(">>>>>>>>>>>>> comments = {}", comment.getId());
-//            log.info(">>>>>>>>>>>>> comments = {}", comment.getAuthor());
-//            log.info(">>>>>>>>>>>>> comments = {}", comment.getPassword());
-//            log.info(">>>>>>>>>>>>> comments = {}", comment.getRegdate());
-//
-//        }
         Assertions.assertEquals(comments.size(), 3);
 
     }
 
     @Test
     @Transactional
-    @DisplayName("댓글 대댓글 리스폰스 객체 출력 테스트")
-    void comment_reply_response_test() {
+    @DisplayName("댓글 대댓글 리스폰스 객체 출력 테스트") //나중에 지움
+    void comment_reply_response_test() throws JsonProcessingException {
         //given
         Post post = Post.builder()
                 .title("제목")
@@ -135,6 +130,7 @@ class CommentServiceImplTest {
                 .password("할아버지비번")
                 .content("할아버지내용")
                 .build();
+
         post.addComment(parentComment);
 
         Comment childComment = Comment.builder()
@@ -161,13 +157,14 @@ class CommentServiceImplTest {
         List<CommentResponse> responseList = new ArrayList<>();
         Map<Long, CommentResponse> map = new HashMap<>();
         comments.forEach(items -> {
-            CommentResponse cr = CommentResponse.convertComment(items);
-            log.info(">>>>>>>>>>>>>>>>> cr {}", cr);
+            CommentResponse cr = CommentResponse.convert(items);
             map.put(cr.getId(), cr);
             if(items.getParent() != null) map.get(items.getParent().getId()).getChildren().add(cr);
             else responseList.add(cr);
         });
 
         responseList.forEach(items -> log.info(">>>>>>>>>> {}", items));
+        String json = new ObjectMapper().writeValueAsString(responseList);
+        log.info(">>>>>>>>>>>>>>>>>>>>>>> json = {}", json);
     }
 }

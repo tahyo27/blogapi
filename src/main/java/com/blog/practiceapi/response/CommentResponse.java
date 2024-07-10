@@ -1,10 +1,13 @@
 package com.blog.practiceapi.response;
 
 import com.blog.practiceapi.domain.Comment;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,15 +15,17 @@ import java.util.List;
 @ToString
 public class CommentResponse {
 
-    private Long id;
-    private String author;
-    private String password;
-    private String content;
-    private Long parentId;
-    private LocalDateTime regdate;
-    private List<CommentResponse> children = new ArrayList<>(); //출력할때 자식 넣는 용도
+    private final Long id;
+    private final String author;
+    private final String password;
+    private final String content;
+    private final Long parentId;
+    private final String regdate;
 
-    public CommentResponse(Long id, String author, String password, String content, Long parentId, LocalDateTime regdate) {
+    private final List<CommentResponse> children = new ArrayList<>(); //출력할때 자식 넣는 용도
+
+    @Builder
+    public CommentResponse(Long id, String author, String password, String content, Long parentId, String regdate) {
         this.id = id;
         this.author = author;
         this.password = password;
@@ -29,9 +34,17 @@ public class CommentResponse {
         this.regdate = regdate;
     }
 
-    public static CommentResponse convertComment(Comment comment) { //todo 리팩토링 생각
-        return new CommentResponse(comment.getId(), comment.getAuthor(), comment.getPassword()
-        , comment.getContent(), (comment.getParent() == null ? null : comment.getParent().getId()), comment.getRegdate());
+
+    public static CommentResponse convert(Comment comment) {
+        Long parentId = (comment.getParent()) == null ? null : comment.getParent().getId();
+        String regdate = comment.getRegdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return CommentResponse.builder()
+                .parentId(parentId)
+                .id(comment.getId())
+                .author(comment.getAuthor())
+                .regdate(regdate)
+                .content(comment.getContent())
+                .build();
     }
 
 

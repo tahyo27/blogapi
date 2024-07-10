@@ -3,9 +3,11 @@ package com.blog.practiceapi.request;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 @Getter
+@ToString
 public class CreateComment {
 
     @Length(min = 1, max = 10, message = "작성자 제한 1~10")

@@ -62,14 +62,13 @@ class PostControllerTest {
     @DisplayName("/posts 요청시 출력 테스트")
     @Transactional
     void controller_get_post_test() throws Exception {
-        //geven
+        //given
         CreatePost request = CreatePost.builder()
                 .title("제목입니다")
                 .content("내용입니다")
                 .build();
 
         String json = (new ObjectMapper()).writeValueAsString(request);
-        System.out.println(json);
         //expect
         mockMvc.perform(post("/posts")
                         .header("authorization", "psyduck")
