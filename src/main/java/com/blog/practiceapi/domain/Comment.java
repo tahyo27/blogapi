@@ -56,4 +56,14 @@ public class Comment {
         child.post = this.post;
         children.add(child);
     }
+
+    public CommentEditor.CommentEditorBuilder toCommentEditor() {
+        return CommentEditor.builder()
+                .content(content);
+    }
+
+    public void edit(CommentEditor commentEditor) {
+        this.content = commentEditor.getContent();
+    }
+
 }

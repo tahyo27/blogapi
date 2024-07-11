@@ -6,9 +6,9 @@ import com.blog.practiceapi.repository.CommentRepository;
 import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreateComment;
 import com.blog.practiceapi.service.CommentService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -136,6 +135,48 @@ class CommentControllerTest {
         //then
         Assertions.assertEquals(comments.size(), 2L);
 
+    }
+
+    @Test
+    @DisplayName("댓글 대댓글 계층 출력 테스트")
+    void comment_reply_print_test() {
+        //given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+
+        Comment grandFather = Comment.builder()
+                .post(post)
+                .author("할아버지")
+                .content("할아버지내용")
+                .password("1234")
+                .build();
+
+        post.addComment(grandFather);
+
+        Comment father = Comment.builder()
+                .author("할아버지아들")
+                .content("할아버지내용")
+                .password("1234")
+                .build();
+
+        grandFather.addChild(father);
+
+        Comment son = Comment.builder()
+                .author("할아버지손자")
+                .content("할아버지손자")
+                .password("1234")
+                .build();
+
+        father.addChild(son);
+
+        postRepository.save(post);
+
+        //when
+
+
+        //then
     }
 
 }
