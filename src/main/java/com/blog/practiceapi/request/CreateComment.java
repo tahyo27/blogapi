@@ -22,10 +22,13 @@ public class CreateComment {
     @NotBlank
     private String content;
 
+    private Long parentId;
+
     @Builder
-    public CreateComment(String author, String password, String content) {
+    public CreateComment(String author, String password, String content, Long parentId) {
         this.author = author;
         this.password = password;
         this.content = content;
+        this.parentId = parentId;
     }
 }

@@ -17,7 +17,6 @@ public class CommentResponse {
 
     private final Long id;
     private final String author;
-    private final String password;
     private final String content;
     private final Long parentId;
     private final String regdate;
@@ -25,10 +24,9 @@ public class CommentResponse {
     private final List<CommentResponse> children = new ArrayList<>(); //출력할때 자식 넣는 용도
 
     @Builder
-    public CommentResponse(Long id, String author, String password, String content, Long parentId, String regdate) {
+    public CommentResponse(Long id, String author, String content, Long parentId, String regdate) {
         this.id = id;
         this.author = author;
-        this.password = password;
         this.content = content;
         this.parentId = parentId;
         this.regdate = regdate;
@@ -38,6 +36,7 @@ public class CommentResponse {
     public static CommentResponse convert(Comment comment) {
         Long parentId = (comment.getParent()) == null ? null : comment.getParent().getId();
         String regdate = comment.getRegdate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
         return CommentResponse.builder()
                 .parentId(parentId)
                 .id(comment.getId())

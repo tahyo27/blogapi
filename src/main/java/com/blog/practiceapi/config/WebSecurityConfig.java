@@ -48,6 +48,7 @@ public class WebSecurityConfig {
         return web -> web.ignoring()
                 .requestMatchers("/favicon.ico")
                 .requestMatchers("/error")
+                .requestMatchers("/", "/index")
                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
 
     }
@@ -57,8 +58,7 @@ public class WebSecurityConfig {
         httpSecurity
                 .csrf((auth) -> auth.disable())
                 .authorizeHttpRequests((authRequests) -> authRequests
-                        .requestMatchers("/auth/login", "/testmyblog", "/testmyblog2","/posts","/docs/index",
-                                "/index", "/posts/{postId}/comments","/posts/{postId}/comments/{parentId}").permitAll() //todo 테스트 용이라 바꿔야함
+                        .requestMatchers("/auth/login", "/testmyblog", "/testmyblog2","/posts","/docs/index.html", "/posts/{postId}/comments").permitAll() //todo 테스트 용 주소들 나중에 삭제
                         .requestMatchers(HttpMethod.POST, "/auth/sign").permitAll()
                         .requestMatchers("/authTest").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -66,11 +66,11 @@ public class WebSecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable) //JWT 인증 사용할거기 때문에 폼로그인 및 http베이직 디스에이블
                 .httpBasic(AbstractHttpConfigurer::disable)
 
-                 // 시큐리티가 세션 사용 X
+                 
                 .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class) //user 인증부분에 넣을거라 at
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-                             // 스프링 6.1부터 메서드 체이닝말고 람다로 해야함
+                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); //위치 중요
+        // 스프링 6.1부터 메서드 체이닝말고 람다로 해야함
         return httpSecurity.build();
     }
 

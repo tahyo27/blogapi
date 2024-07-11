@@ -27,19 +27,8 @@ public class CommentController {
 
     @GetMapping("/posts/{postId}/comments")
     public List<CommentResponse> getCommentLists(@PathVariable(value = "postId") Long postId) {
-        List<CommentResponse> commentResponses = commentService.getList(postId);
-        commentResponses.forEach(items -> log.info(">>>>>>>>>> {}", items));
-//        String json = new ObjectMapper().writeValueAsString(commentResponses);
+        //        String json = new ObjectMapper().writeValueAsString(commentResponses);
 //        log.info(">>>>>>>>>>>>>>>>>>>>>>> json = {}", json);
-        return commentResponses;
+        return commentService.getList(postId);
     }
-
-    @PostMapping("/posts/{postId}/comments/{parentId}")
-    public void replyWrite(@PathVariable(value = "postId") Long postId, @PathVariable(value = "parentId") Long parentId,
-                           @RequestBody @Valid CreateComment commentRequest) {
-        commentService.replyWrite(parentId, commentRequest);
-
-    }
-
-
 }

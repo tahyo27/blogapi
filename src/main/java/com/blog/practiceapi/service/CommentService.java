@@ -8,7 +8,9 @@ import java.util.List;
 public interface CommentService {
     void write(Long postId, CreateComment commentRequest);
 
-    void replyWrite(Long parentId, CreateComment commentRequest);
+   // void replyWrite(Long parentId, CreateComment commentRequest);
 
     List<CommentResponse> getList(Long postId);
+
+    //void writeTest(Long postId, CreateComment commentRequest);
 }

@@ -51,6 +51,9 @@ class PostControllerTest {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @BeforeEach
     void clean() {
         postRepository.deleteAll();
@@ -68,7 +71,7 @@ class PostControllerTest {
                 .content("내용입니다")
                 .build();
 
-        String json = (new ObjectMapper()).writeValueAsString(request);
+        String json = objectMapper.writeValueAsString(request);
         //expect
         mockMvc.perform(post("/posts")
                         .header("authorization", "psyduck")
@@ -104,7 +107,7 @@ class PostControllerTest {
                 .content("내용입니다")
                 .build();
 
-        String json = (new ObjectMapper()).writeValueAsString(request);
+        String json = objectMapper.writeValueAsString(request);
         //when
         mockMvc.perform(post("/posts?authorization=psyduck")
                         .header("authorization", "psyduck")
@@ -220,7 +223,7 @@ class PostControllerTest {
                 .content(editedPost.getContent())
                 .build();
 
-        String json = (new ObjectMapper()).writeValueAsString(postEditor);
+        String json = objectMapper.writeValueAsString(postEditor);
         //expected
 
         //생각해야할 부분 EditPost에서 null 허용 여부
@@ -242,7 +245,7 @@ class PostControllerTest {
                 .content("용내1")
                 .build();
 
-        String json = (new ObjectMapper()).writeValueAsString(editedPost);
+        String json = objectMapper.writeValueAsString(editedPost);
         //expected
 
         mockMvc.perform(patch("/posts/{postId}", 2L) //patch post/{postId}
@@ -287,11 +290,10 @@ class PostControllerTest {
     void controller_post_delete_exception_test() throws Exception {
         //expected
         mockMvc.perform(delete("/posts/{postId}", 1L)
-                                .header("authorization", "psyduck")
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message", Matchers.is("존재하지 않는 글")))
+                .andExpect(jsonPath("$.message", Matchers.is("포스트를 찾을 수 없습니다")))
                 .andDo(print());
     }
 
@@ -300,16 +302,15 @@ class PostControllerTest {
     @Transactional
     void controller_get_post_title_exception_test() throws Exception {
         //given
-        Post post = Post.builder()
-                .title("시발테스트")
-                .content("내용테스트")
+        CreatePost createPost = CreatePost.builder()
+                .title("씨발제목")
+                .content("씨발내용")
                 .build();
 
-        String json = (new ObjectMapper()).writeValueAsString(post);
+        String json = objectMapper.writeValueAsString(createPost);
         //String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.mNHI7gEGjaLPNUmGmto3CBDBu_fz_KBQeVzWyJxKyuw";
         //expected
         mockMvc.perform(post("/posts")
-                        .header("authorization", "psyduck")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
                 )

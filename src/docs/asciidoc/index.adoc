@@ -66,3 +66,38 @@ include::{snippets}/post-delete/http-response.adoc[]
 === Curl
 
 include::{snippets}/post-delete/curl-request.adoc[]
+
+
+== Comment 조회
+
+=== Request
+
+include::{snippets}/comment-inquiry/http-request.adoc[]
+
+include::{snippets}/comment-inquiry/path-parameters.adoc[]
+
+
+=== Response
+
+include::{snippets}/comment-inquiry/http-response.adoc[]
+
+include::{snippets}/comment-inquiry/response-fields.adoc[]
+
+=== Curl
+
+include::{snippets}/comment-inquiry/curl-request.adoc[]
+
+== Comment 등록
+
+=== Request
+
+include::{snippets}/comment-regist/http-request.adoc[]
+
+
+=== Response
+
+include::{snippets}/comment-regist/http-response.adoc[]
+
+=== Curl
+
+include::{snippets}/comment-regist/curl-request.adoc[]

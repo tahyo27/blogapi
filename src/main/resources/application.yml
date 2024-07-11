@@ -1,5 +1,5 @@
-server:
-  port: 8072
+#server:
+ # port: 8072
 
 spring:
   application:
@@ -19,14 +19,16 @@ spring:
   #password:
   #driver-class-name: org.h2.Driver
   datasource:
-    url: jdbc:mariadb://localhost:3306/myblog
-    username: root
-    password: 12345
+    url: jdbc:mariadb://localhost:3306/myoci
+    username: test
+    password: 1234
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+#pc 로컬 root/12345   myoci 오라클 무료 db test/1234
 
 #resilience4j.ratelimeter
 resilience4j.ratelimiter:

@@ -43,19 +43,21 @@ public class Comment {
     private List<Comment> children = new ArrayList<>();
 
     @Builder
-    public Comment(String author, String password, String content, Post post) {
+    public Comment(String author, String password, String content, Post post, Comment parent) {
         this.author = author;
         this.password = password;
         this.content = content;
         this.post = post;
+        this.parent = parent;
         this.regdate = LocalDateTime.now();
     }
-
-    public void addChild(Comment child) {
-        child.parent = this;
-        child.post = this.post;
-        children.add(child);
-    }
+//
+//    public void addChild(Comment child) {
+//        child.parent = this;
+//        child.post = this.post;
+//        children.add(child);
+//       // this.post.addComment(child);
+//    }
 
     public CommentEditor.CommentEditorBuilder toCommentEditor() {
         return CommentEditor.builder()

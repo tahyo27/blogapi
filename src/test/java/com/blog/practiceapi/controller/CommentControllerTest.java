@@ -8,7 +8,7 @@ import com.blog.practiceapi.request.CreateComment;
 import com.blog.practiceapi.service.CommentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,10 +23,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
@@ -93,29 +95,14 @@ class CommentControllerTest {
     @DisplayName("대댓글 테스트")
     void comment_reply_test() throws Exception {
         //given
-        Post post = Post.builder()
-                .title("제목")
-                .content("내용")
-                .build();
+        Map<String, Long> mp = testObj();
 
-
-        Comment grandFather = Comment.builder()
-                .post(post)
-                .author("할아버지")
-                .content("할아버지내용")
-                .password("1234")
-                .build();
-
-        post.addComment(grandFather);
-
-        postRepository.save(post);
-
-        Long postId = post.getId();
-        Long parentId = grandFather.getId();
-
+        Long postId = mp.get("post");
+        Long parentId = mp.get("comment");
         
         CreateComment father = CreateComment.builder()
                 .author("할아버지아들")
+                .parentId(parentId)
                 .content("할아버지내용")
                 .password("1234")
                 .build();
@@ -125,7 +112,7 @@ class CommentControllerTest {
         log.info(">>>>>>>>>>>>>>>>>>>>>>> {}", parentId);
         //when
 
-        mockMvc.perform(post("/posts/{postId}/comments/{parentId}", postId, parentId)
+        mockMvc.perform(post("/posts/{postId}/comments", postId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonFather)
                 )
@@ -135,7 +122,7 @@ class CommentControllerTest {
         List<Comment> comments = commentRepository.findAll();
 
         //then
-        Assertions.assertEquals(comments.size(), 2L);
+        Assertions.assertEquals(comments.size(), 4L);
 
     }
 
@@ -143,47 +130,58 @@ class CommentControllerTest {
     @DisplayName("댓글 대댓글 계층 출력 테스트")
     void comment_reply_print_test() throws Exception {
         //given
-        Post post = Post.builder()
-                .title("제목")
-                .content("내용")
-                .build();
-
-        Comment grandFather = Comment.builder()
-                .post(post)
-                .author("할아버지")
-                .content("할아버지내용")
-                .password("1234")
-                .build();
-
-        post.addComment(grandFather);
-
-        Comment father = Comment.builder()
-                .author("할아버지아들")
-                .content("할아버지내용")
-                .password("1234")
-                .build();
-
-        grandFather.addChild(father);
-
-        Comment son = Comment.builder()
-                .author("할아버지손자")
-                .content("할아버지손자")
-                .password("1234")
-                .build();
-
-        father.addChild(son);
-
-        postRepository.save(post);
-        Long postId = post.getId();
+        Long postId = testObj().get("post");
 
         //expected
         mockMvc.perform(get("/posts/{postId}/comments", postId)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].children[0].author", Matchers.is("아빠작성자")))
                 .andDo(print());
 
-
     }
+
+    @Transactional
+    private Map<String, Long> testObj() {
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+
+        Comment parentComment = Comment.builder()
+                .post(post)
+                .author("할아버지작성자")
+                .password("할아버지비번")
+                .content("할아버지내용")
+                .build();
+
+        post.addComment(parentComment);
+
+        Comment childComment = Comment.builder()
+                .post(post)
+                .parent(parentComment)
+                .author("아빠작성자")
+                .password("아빠비번")
+                .content("아빠내용")
+                .build();
+
+        post.addComment(childComment);
+
+        Comment childChild = Comment.builder()
+                .post(post)
+                .parent(childComment)
+                .author("아들작성자")
+                .password("아들비번")
+                .content("아들내용")
+                .build();
+
+        post.addComment(childChild);
+
+        postRepository.save(post);
+
+        return Map.of("post", post.getId(), "comment", parentComment.getId());
+    }
+
 
 }
