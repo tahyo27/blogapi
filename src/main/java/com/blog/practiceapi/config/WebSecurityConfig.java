@@ -57,7 +57,8 @@ public class WebSecurityConfig {
         httpSecurity
                 .csrf((auth) -> auth.disable())
                 .authorizeHttpRequests((authRequests) -> authRequests
-                        .requestMatchers("/auth/login", "/testmyblog", "/testmyblog2","/posts","/docs/index", "/index", "/posts/{postId}/comments/{parentId}").permitAll()
+                        .requestMatchers("/auth/login", "/testmyblog", "/testmyblog2","/posts","/docs/index",
+                                "/index", "/posts/{postId}/comments","/posts/{postId}/comments/{parentId}").permitAll() //todo 테스트 용이라 바꿔야함
                         .requestMatchers(HttpMethod.POST, "/auth/sign").permitAll()
                         .requestMatchers("/authTest").hasRole("ADMIN")
                         .anyRequest().authenticated()

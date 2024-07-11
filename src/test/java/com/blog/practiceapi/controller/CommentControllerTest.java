@@ -20,9 +20,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -139,7 +141,7 @@ class CommentControllerTest {
 
     @Test
     @DisplayName("댓글 대댓글 계층 출력 테스트")
-    void comment_reply_print_test() {
+    void comment_reply_print_test() throws Exception {
         //given
         Post post = Post.builder()
                 .title("제목")
@@ -172,11 +174,16 @@ class CommentControllerTest {
         father.addChild(son);
 
         postRepository.save(post);
+        Long postId = post.getId();
 
-        //when
+        //expected
+        mockMvc.perform(get("/posts/{postId}/comments", postId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
 
 
-        //then
     }
 
 }
