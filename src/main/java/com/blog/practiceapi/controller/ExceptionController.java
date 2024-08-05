@@ -21,12 +21,12 @@ public class ExceptionController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> exceptionHandler(MethodArgumentNotValidException e) {
-        return BlogException(new NotBlankException(e));
+        return blogException(new NotBlankException(e));
     }
 
     @ResponseBody
     @ExceptionHandler(BlogException.class)
-    public ResponseEntity<ErrorResponse> BlogException(BlogException e) {
+    public ResponseEntity<ErrorResponse> blogException(BlogException e) {
         int stCode = e.getStatusCode();
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -41,6 +41,6 @@ public class ExceptionController {
 
     @ExceptionHandler(RequestNotPermitted.class)
     public ResponseEntity<ErrorResponse> requestLimitException(RequestNotPermitted e) {
-        return BlogException(new TooManyRequestException());
+        return blogException(new TooManyRequestException());
     }
 }
