@@ -28,6 +28,14 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  cloud:
+    gcp:
+      storage:
+        credentials:
+          location: classpath:gcs/imgstorage.json
+        project-id: imgtest-429913
+        bucket: imgtest_bucket
+
 #pc 로컬 root/12345   myoci 오라클 무료 db test/1234
 
 #resilience4j.ratelimeter

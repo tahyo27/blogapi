@@ -74,6 +74,9 @@ dependencies {
 	//resilience4j
 	implementation "io.github.resilience4j:resilience4j-spring-boot3:2.2.0"
 
+	// https://mvnrepository.com/artifact/com.google.cloud/google-cloud-storage
+	implementation 'com.google.cloud:google-cloud-storage:2.40.0'
+
 
 
 	//test
