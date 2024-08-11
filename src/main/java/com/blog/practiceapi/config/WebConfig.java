@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) { // todo 시큐리티 쪽으로 합칠 수 있나?
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173");
+                .allowedOrigins("http://localhost:5173", "http://localhost:5174");
     }
 
 

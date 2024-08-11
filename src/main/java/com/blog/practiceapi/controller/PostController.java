@@ -33,7 +33,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @PostMapping("/posts")
     public void writePost(@RequestBody @Valid CreatePost postRequest) throws Exception {
         postRequest.isValid();

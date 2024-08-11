@@ -77,6 +77,10 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.google.cloud/google-cloud-storage
 	implementation 'com.google.cloud:google-cloud-storage:2.40.0'
 
+	// https://mvnrepository.com/artifact/org.jsoup/jsoup
+	implementation 'org.jsoup:jsoup:1.18.1'
+
+
 
 
 	//test
