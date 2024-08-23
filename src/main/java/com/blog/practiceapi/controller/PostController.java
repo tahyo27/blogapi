@@ -69,15 +69,16 @@ public class PostController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/temp/image")
     public ResponseEntity<?> imageTemp(MultipartFile file) { //에디터 이미지 임시저장
-        if(file.isEmpty()) {
+        if(file.isEmpty()) { //파일 체크
             throw new InvalidFileException();
         } else if (file.getOriginalFilename() == null || file.getOriginalFilename().isEmpty()) {
             throw new InvalidFileException();
         }
 
-        Path tempDirPath = Path.of("./temp/image");
+        Path tempDirPath = Path.of("./temp/image"); //파일 경로
+
         try {
-            if (!Files.exists(tempDirPath)) {
+            if (!Files.exists(tempDirPath)) { //디렉토리 없으면 디렉토리 생성
                 Files.createDirectories(tempDirPath);
             }
             String originName = file.getOriginalFilename();
@@ -85,14 +86,14 @@ public class PostController {
             String tempName = uuidName + "_" + originName;
             Path tempFilePath = tempDirPath.resolve(tempName); // 패스 합치기
             //temp에 이미지 저장
-            Files.copy(file.getInputStream(), tempFilePath);
+            Files.copy(file.getInputStream(), tempFilePath); // 파일 복사
 
             String imageUrl = "/temp/image/" + tempName; // 이미지 받을 주소
 
-            return ResponseEntity.ok().body(Map.of("url", imageUrl));
+            return ResponseEntity.ok().body(Map.of("url", imageUrl)); // 이미지 url 내려보내주기
 
         } catch (IOException e) {
-            return ResponseEntity.status(500).body("이미지 업로드 실패");
+            throw new InvalidFileException();
         }
 
     }
@@ -100,10 +101,11 @@ public class PostController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/temp/image/{filename}") //임시 저장한 이미지 에디터로 보내는 주소
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws MalformedURLException {
-        Path file = Path.of("./temp/image", filename); // 임시 저장 이미지파일 경로
+        Path file = Path.of("./temp/image", filename); // 임시 저장한 이미지파일 경로
+        
         Resource resource = new UrlResource(file.toUri());
 
-        if (resource.exists() || resource.isReadable()) {
+        if (resource.exists() || resource.isReadable()) { //파일이 있으면
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(resource);
