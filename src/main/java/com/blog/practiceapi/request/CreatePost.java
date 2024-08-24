@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 @Getter
@@ -20,12 +19,16 @@ public class CreatePost {
     private final String title;
 
     @NotBlank
-    private final String content;
+    private String content;
 
     @Builder
     @Jacksonized
     public CreatePost(String title, String content) {
         this.title = title;
+        this.content = content;
+    }
+
+    public void setContent(String content) {
         this.content = content;
     }
 

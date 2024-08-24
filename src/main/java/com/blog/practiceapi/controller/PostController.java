@@ -1,11 +1,10 @@
 package com.blog.practiceapi.controller;
 
-import com.blog.practiceapi.exception.ImageFileUploadException;
+import com.blog.practiceapi.common.ImageProcess;
 import com.blog.practiceapi.exception.InvalidFileException;
 import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.request.CursorPaging;
 import com.blog.practiceapi.request.EditPost;
-import com.blog.practiceapi.request.OffsetPaging;
 import com.blog.practiceapi.response.PostResponse;
 import com.blog.practiceapi.service.PostService;
 import jakarta.validation.Valid;
@@ -39,7 +38,12 @@ public class PostController {
     @PostMapping("/posts")
     public void writePost(@RequestBody @Valid CreatePost postRequest) throws Exception {
         postRequest.isValid();
-        postService.write(postRequest);
+        
+        ImageProcess imageProcess = new ImageProcess(postRequest.getContent()); //이미지 처리
+        postRequest.setContent(imageProcess.getContent()); // 주소부분 구글로 변경하는 처리
+
+
+        postService.write(postRequest); // todo 처리한 이미지부분 서비스에서 이미지 리스트와 딜리트 리스트로 처리 필요
     }
 
     @GetMapping("/posts/{postId}")
