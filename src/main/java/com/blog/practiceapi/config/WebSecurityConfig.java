@@ -50,6 +50,8 @@ public class WebSecurityConfig {
                 .requestMatchers("/error")
                 .requestMatchers("/", "/index")
                 .requestMatchers("/posts")
+                .requestMatchers("/temp/image")
+                .requestMatchers("/temp/image/{filename}")
                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
 
     }

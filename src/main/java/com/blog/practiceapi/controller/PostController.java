@@ -70,9 +70,10 @@ public class PostController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @PostMapping("/temp/image")
     public ResponseEntity<?> imageTemp(MultipartFile file) { //에디터 이미지 임시저장
+        log.info("이미지 파일 테스트");
         if(file.isEmpty()) { //파일 체크
             throw new InvalidFileException();
         } else if (file.getOriginalFilename() == null || file.getOriginalFilename().isEmpty()) {
@@ -92,7 +93,7 @@ public class PostController {
             //temp에 이미지 저장
             Files.copy(file.getInputStream(), tempFilePath); // 파일 복사
 
-            String imageUrl = "/temp/image/" + tempName; // 이미지 받을 주소
+            String imageUrl = "http://localhost:8072/temp/image/" + tempName; // 이미지 받을 주소 todo 로컬 테스트 이후엔 변경해야함
 
             return ResponseEntity.ok().body(Map.of("url", imageUrl)); // 이미지 url 내려보내주기
 
@@ -102,9 +103,10 @@ public class PostController {
 
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/temp/image/{filename}") //임시 저장한 이미지 에디터로 보내는 주소
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws MalformedURLException {
+        log.info("이미지 파일 불러오기 테스트");
         Path file = Path.of("./temp/image", filename); // 임시 저장한 이미지파일 경로
         
         Resource resource = new UrlResource(file.toUri());
