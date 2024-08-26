@@ -1,5 +1,7 @@
 package com.blog.practiceapi.service;
 
+import com.blog.practiceapi.common.GoogleStorageUtil;
+import com.blog.practiceapi.common.ImageNameParser;
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.domain.PostEditor;
 import com.blog.practiceapi.exception.PostNotFound;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,15 +25,20 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
+    private final GoogleStorageUtil googleStorageUtil;
 
     @Override
-    public void write(CreatePost createPost) {
+    public void write(CreatePost createPost, List<ImageNameParser> parserList) {
         Post post = Post.builder()
                 .title(createPost.getTitle())
                 .content(createPost.getContent())
                 .build();
 
         postRepository.save(post);
+// todo 완성하기
+//        if(!parserList.isEmpty()) {
+//            uploadImage(parserList, post.getId());
+//        }
     }
 
     @Override
@@ -81,6 +89,19 @@ public class PostServiceImpl implements PostService {
                 .map(PostResponse::new)
                 .toList();
     }
+
+    /*private void uploadImage(List<ImageNameParser> parserList, Long postId) {
+        List<Image> imageList = new ArrayList<>();
+        for (ImageNameParser imageNameParser : parserList) {
+            if (googleStorageUtil.imgUpload(imageNameParser)) {
+                Image image = imageNameParser.convertImage(postId);
+                imageList.add(image);
+            } else {
+                log.info("예외처리 들어가야함");
+            }
+        }
+        imagesRepository.saveAll(imageList);
+    }*/
 
 
 }

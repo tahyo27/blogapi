@@ -1,5 +1,6 @@
 package com.blog.practiceapi.service;
 
+import com.blog.practiceapi.common.ImageNameParser;
 import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.request.CursorPaging;
 import com.blog.practiceapi.request.EditPost;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public interface PostService {
 
-    void write(CreatePost createPost);
+    void write(CreatePost createPost, List<ImageNameParser> parserList);
 
     PostResponse get(Long id);
 

@@ -1,5 +1,6 @@
 package com.blog.practiceapi.service;
 
+import com.blog.practiceapi.common.ImageNameParser;
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.exception.PostNotFound;
 import com.blog.practiceapi.repository.PostRepository;
@@ -51,9 +52,9 @@ class PostServiceImplTest {
                 .title("제목")
                 .content("내용")
                 .build();
-
+        List<ImageNameParser> parserList = null;
         //when
-        postService.write(createPost);
+        postService.write(createPost, parserList);
 
         //then
         Assertions.assertEquals(1L, postRepository.count());
