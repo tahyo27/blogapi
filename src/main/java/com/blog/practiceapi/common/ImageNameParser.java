@@ -1,5 +1,7 @@
 package com.blog.practiceapi.common;
 
+import com.blog.practiceapi.domain.Image;
+import com.blog.practiceapi.domain.Post;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,7 +18,7 @@ public class ImageNameParser {
     private final String gcsPath;
     private final String tempName;
     private final String extension;
-    public ImageNameParser(String src) { //todo 주소처리 고민
+    public ImageNameParser(String src) { //todo 주소처리 로컬이니까 변경 필요
 
         String replacedName = src.replace("/temp/image/", "");
         String[] parts = replacedName.split("_", 2);
@@ -32,6 +34,15 @@ public class ImageNameParser {
         this.uuidName = unique;
         this.gcsPath = path;
 
+    }
+
+    public Image convertImage(Post post) {
+        return Image.builder()
+                .post(post)
+                .originName(originName)
+                .uniqueName(uuidName)
+                .imagePath(gcsPath)
+                .build();
     }
 
 }

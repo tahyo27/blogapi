@@ -1,6 +1,8 @@
 package com.blog.practiceapi.config;
 
+import com.blog.practiceapi.common.GoogleStorageUtil;
 import com.blog.practiceapi.repository.CommentRepository;
+import com.blog.practiceapi.repository.ImageRepository;
 import com.blog.practiceapi.repository.MemberRepository;
 import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.service.*;
@@ -26,8 +28,8 @@ public class AppConfig {
     }
 
     @Bean
-    public PostService postService(PostRepository postRepository) {
-        return new PostServiceImpl(postRepository);
+    public PostService postService(PostRepository postRepository, GoogleStorageUtil googleStorageUtil, ImageRepository imageRepository) {
+        return new PostServiceImpl(postRepository, googleStorageUtil, imageRepository);
     }
 
     @Bean

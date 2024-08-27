@@ -2,9 +2,11 @@ package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.common.GoogleStorageUtil;
 import com.blog.practiceapi.common.ImageNameParser;
+import com.blog.practiceapi.domain.Image;
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.domain.PostEditor;
 import com.blog.practiceapi.exception.PostNotFound;
+import com.blog.practiceapi.repository.ImageRepository;
 import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.request.CursorPaging;
@@ -26,7 +28,10 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final GoogleStorageUtil googleStorageUtil;
+    private final ImageRepository imageRepository;
 
+
+    @Transactional
     @Override
     public void write(CreatePost createPost, List<ImageNameParser> parserList) {
         Post post = Post.builder()
@@ -35,10 +40,10 @@ public class PostServiceImpl implements PostService {
                 .build();
 
         postRepository.save(post);
-// todo 완성하기
-//        if(!parserList.isEmpty()) {
-//            uploadImage(parserList, post.getId());
-//        }
+
+        if(!parserList.isEmpty()) {
+            uploadImage(parserList, post);
+        }
     }
 
     @Override
@@ -90,18 +95,18 @@ public class PostServiceImpl implements PostService {
                 .toList();
     }
 
-    /*private void uploadImage(List<ImageNameParser> parserList, Long postId) {
+    private void uploadImage(List<ImageNameParser> parserList, Post post) {
         List<Image> imageList = new ArrayList<>();
         for (ImageNameParser imageNameParser : parserList) {
             if (googleStorageUtil.imgUpload(imageNameParser)) {
-                Image image = imageNameParser.convertImage(postId);
+                Image image = imageNameParser.convertImage(post);
                 imageList.add(image);
             } else {
                 log.info("예외처리 들어가야함");
             }
         }
-        imagesRepository.saveAll(imageList);
-    }*/
+        imageRepository.saveAll(imageList);
+    }
 
 
 }
