@@ -19,6 +19,7 @@ public class ImageProcess {
     private List<ImageNameParser> imageList;
     private List<String> deletePath;
     private String content;
+    private final String replacedURL = "http://localhost:8072/temp/image/";
 
     public ImageProcess(String content) {
         this(content, new ArrayList<>());
@@ -38,7 +39,7 @@ public class ImageProcess {
         if (!images.isEmpty()) {
             for (Element image : images) {
                 String srcStr = image.attr("src");
-                if (srcStr.startsWith("/temp/image")) {
+                if (srcStr.startsWith(replacedURL)) {
                     ImageNameParser imageNameParser = new ImageNameParser(srcStr);
                     imageList.add(imageNameParser);
                     image.attr("src", imageNameParser.getGcsPath());

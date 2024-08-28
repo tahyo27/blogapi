@@ -18,9 +18,11 @@ public class ImageNameParser {
     private final String gcsPath;
     private final String tempName;
     private final String extension;
+
+    private final String replacedURL = "http://localhost:8072/temp/image/";
     public ImageNameParser(String src) { //todo 주소처리 로컬이니까 변경 필요
 
-        String replacedName = src.replace("/temp/image/", "");
+        String replacedName = src.replace(replacedURL, "");
         String[] parts = replacedName.split("_", 2);
         String origin = parts[1];
         String fileExtension = origin != null && origin.contains(".") //확장자 추출

@@ -40,7 +40,7 @@ public class PostServiceImpl implements PostService {
                 .build();
 
         postRepository.save(post);
-
+        log.info("wrtie parserList >>>>>>>>>>>>>> {}", parserList);
         if(!parserList.isEmpty()) {
             uploadImage(parserList, post);
         }
