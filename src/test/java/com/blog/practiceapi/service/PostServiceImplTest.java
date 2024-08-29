@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -52,7 +53,7 @@ class PostServiceImplTest {
                 .title("제목")
                 .content("내용")
                 .build();
-        List<ImageNameParser> parserList = null;
+        List<ImageNameParser> parserList = new ArrayList<>();
         //when
         postService.write(createPost, parserList);
 
