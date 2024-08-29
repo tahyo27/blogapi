@@ -108,5 +108,12 @@ public class PostServiceImpl implements PostService {
         imageRepository.saveAll(imageList);
     }
 
+    private void deleteImages(List<String> deletePath, Long postId) { //todo 예외처리
+        for (String str : deletePath) {
+            googleStorageUtil.imgDelete(str);
+        }
+        imageRepository.deleteByPostIdAndImagePathIn(postId, deletePath);
+    }
+
 
 }
