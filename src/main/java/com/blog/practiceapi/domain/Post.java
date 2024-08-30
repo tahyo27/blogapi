@@ -53,4 +53,8 @@ public class Post {
     public void addComment(Comment comment) {
         this.comments.add(comment);
     }
+
+    public void addImages(Image image) {
+        this.images.add(image);
+    }
 }

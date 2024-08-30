@@ -1,8 +1,10 @@
 package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.common.ImageNameParser;
+import com.blog.practiceapi.domain.Image;
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.exception.PostNotFound;
+import com.blog.practiceapi.repository.ImageRepository;
 import com.blog.practiceapi.repository.PostRepository;
 import com.blog.practiceapi.request.CreatePost;
 import com.blog.practiceapi.request.CursorPaging;
@@ -38,6 +40,9 @@ class PostServiceImplTest {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private ImageRepository imageRepository;
 
     @BeforeEach
     void clean() {
@@ -290,6 +295,35 @@ class PostServiceImplTest {
         log.info(">>>>>>>>>>>>>>>>>{}", getLists.toString());
 
         assertEquals(0L, getLists.size());
+    }
+
+    @Test
+    @DisplayName("post 삭제시 이미지 삭제 테스트")
+    void post_image_delete_test() {
+        //given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+
+        Image image = Image.builder()
+                .post(post)
+                .imagePath("asdf")
+                .originName("dfdf")
+                .uniqueName("sdfdf")
+                .build();
+
+        post.addImages(image);
+
+        postRepository.save(post);
+
+        //when
+        postRepository.deleteById(post.getId());
+
+
+        //then
+        Assertions.assertEquals(0, postRepository.count());
+        Assertions.assertEquals(0, imageRepository.count());
     }
 
 
