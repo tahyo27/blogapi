@@ -326,6 +326,32 @@ class PostServiceImplTest {
         Assertions.assertEquals(0, imageRepository.count());
     }
 
+    @Test
+    @DisplayName("Post 이미지 패스 찾기 테스트")
+    void post_imagePath_find_test() {
+        //given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+
+        Image image = Image.builder()
+                .post(post)
+                .imagePath("asdf")
+                .originName("dfdf")
+                .uniqueName("sdfdf")
+                .build();
+
+        post.addImages(image);
+
+        postRepository.save(post);
+        //when
+        List<String> list = imageRepository.findImagePathsByPostId(post.getId());
+
+        //then
+        Assertions.assertEquals("asdf", list.get(0));
+    }
+
 
 
 

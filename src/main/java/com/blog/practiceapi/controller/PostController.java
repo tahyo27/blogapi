@@ -60,7 +60,9 @@ public class PostController {
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/posts/{postId}")
     public void edit(@PathVariable(name = "postId") Long postId, @RequestBody @Valid EditPost editRequest) {
+        //todo 이미지 찾기 만들기
         postService.editPost(postId, editRequest);
+        
     }
 
     @PreAuthorize("hasRole('ADMIN')")

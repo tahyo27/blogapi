@@ -22,4 +22,6 @@ public interface PostService {
     void delete(Long id);
 
     List<PostResponse> getListWithCursor(CursorPaging cursorPaging);
+
+    List<String> getImagePath(Long id);
 }

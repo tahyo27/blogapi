@@ -5,6 +5,7 @@ import com.blog.practiceapi.common.ImageNameParser;
 import com.blog.practiceapi.domain.Image;
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.domain.PostEditor;
+import com.blog.practiceapi.exception.ImageUploadException;
 import com.blog.practiceapi.exception.PostNotFound;
 import com.blog.practiceapi.repository.ImageRepository;
 import com.blog.practiceapi.repository.PostRepository;
@@ -31,8 +32,9 @@ public class PostServiceImpl implements PostService {
     private final ImageRepository imageRepository;
 
 
-    @Transactional
+
     @Override
+    @Transactional
     public void write(CreatePost createPost, List<ImageNameParser> parserList) {
         Post post = Post.builder()
                 .title(createPost.getTitle())
@@ -73,6 +75,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(PostNotFound::new);
 
         PostEditor.PostEditorBuilder builder = post.toPostEditor();
+
         PostEditor postEditor = builder
                 .title(editPost.getTitle())
                 .content(editPost.getContent())
@@ -95,6 +98,11 @@ public class PostServiceImpl implements PostService {
                 .toList();
     }
 
+    @Override
+    public List<String> getImagePath(Long postId) {
+        return imageRepository.findImagePathsByPostId(postId);
+    }
+
     private void uploadImage(List<ImageNameParser> parserList, Post post) {
         List<Image> imageList = new ArrayList<>();
         for (ImageNameParser imageNameParser : parserList) {
@@ -102,7 +110,7 @@ public class PostServiceImpl implements PostService {
                 Image image = imageNameParser.convertImage(post);
                 imageList.add(image);
             } else {
-                log.info("예외처리 들어가야함");
+                throw new ImageUploadException();
             }
         }
         imageRepository.saveAll(imageList);
