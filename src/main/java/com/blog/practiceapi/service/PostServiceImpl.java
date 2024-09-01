@@ -2,6 +2,7 @@ package com.blog.practiceapi.service;
 
 import com.blog.practiceapi.common.GoogleStorageUtil;
 import com.blog.practiceapi.common.ImageNameParser;
+import com.blog.practiceapi.common.ImageProcess;
 import com.blog.practiceapi.domain.Image;
 import com.blog.practiceapi.domain.Post;
 import com.blog.practiceapi.domain.PostEditor;
@@ -73,12 +74,14 @@ public class PostServiceImpl implements PostService {
     public void editPost(Long id, EditPost editPost) {
         Post post = postRepository.findById(id)
                 .orElseThrow(PostNotFound::new);
+        List<String> savedList = imageRepository.findImagePathsByPostId(id);
+        ImageProcess imageProcess  = new ImageProcess(editPost.getContent(), savedList); //todo 컴포넌트로 쓸지 고민
 
         PostEditor.PostEditorBuilder builder = post.toPostEditor();
 
-        PostEditor postEditor = builder
+        PostEditor postEditor = builder  //todo 변경 테스트하기
                 .title(editPost.getTitle())
-                .content(editPost.getContent())
+                .content(imageProcess.getContent())
                 .build();
 
         post.edit(postEditor);
