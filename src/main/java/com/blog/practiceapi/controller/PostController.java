@@ -42,7 +42,6 @@ public class PostController {
         ImageProcess imageProcess = new ImageProcess(postRequest.getContent()); //이미지 처리
         postRequest.setContent(imageProcess.getContent()); // 주소부분 구글로 변경하는 처리
 
-
         postService.write(postRequest, imageProcess.getImageList()); // todo 처리한 이미지부분 서비스에서 이미지 리스트와 딜리트 리스트로 처리 필요
     }
 

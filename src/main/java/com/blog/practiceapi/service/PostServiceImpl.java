@@ -72,10 +72,21 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void editPost(Long id, EditPost editPost) {
-        Post post = postRepository.findById(id)
+        Post post = postRepository.findById(id) //포스트 존재하는지 확인
                 .orElseThrow(PostNotFound::new);
-        List<String> savedList = imageRepository.findImagePathsByPostId(id);
-        ImageProcess imageProcess  = new ImageProcess(editPost.getContent(), savedList); //todo 컴포넌트로 쓸지 고민
+
+        List<String> savedList = imageRepository.findImagePathsByPostId(id); // 없어도 상관 X
+        
+        //이미지 처리부분
+        ImageProcess imageProcess  = new ImageProcess(editPost.getContent(), savedList);
+
+        if(!imageProcess.getDeletePath().isEmpty()) { //삭제해야할 부분 삭제 (구글 스토리지에서)
+            deleteImages(imageProcess.getDeletePath(), id); //todo jpa 때문에 업로드 post로 했는데 통일 할지 말지 고민
+        }
+
+        if(!imageProcess.getImageList().isEmpty()) { //업로드 해야될 부분 업로드 (구글 스토리지에서)
+            uploadImage(imageProcess.getImageList(), post);
+        }
 
         PostEditor.PostEditorBuilder builder = post.toPostEditor();
 
@@ -91,7 +102,7 @@ public class PostServiceImpl implements PostService {
     public void delete(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(PostNotFound::new);
-        postRepository.delete(post);
+        postRepository.delete(post); // todo 삭제했을때 삭제부분 처리하기 작성 필요
     }
 
     @Override
