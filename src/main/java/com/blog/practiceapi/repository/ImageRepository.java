@@ -11,7 +11,7 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
 
     void deleteByPostIdAndImagePathIn(Long postId, List<String> imagePaths);
 
-    @Query("SELECT i.imagePath FROM image i WHERE i.post.id = :postId")
+    @Query("SELECT i.imagePath FROM Image i WHERE i.post.id = :postId") //Image 할때 db가 아니라 엔티티 객체라 I를 대문자로 해야함
     List<String> findImagePathsByPostId(@Param("postId") Long postId);
 
 }
