@@ -2,24 +2,25 @@ server:
  port: 8072
 
 spring:
-  application:
-    name: practiceapi
-  session:
-    store-type: jdbc
-    jdbc:
-      initialize-schema: always
   mail:
     host: smtp.gmail.com
-    port: 587
     username: testbanchan7@gmail.com
     password: xptmxmqkscks7
+    port: 587
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-    default-encoding: UTF-8
+
+  application:
+    name: practiceapi
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+
 #  h2:
 #    console:
 #      enable: true;
@@ -67,10 +68,3 @@ myblog:
   strKey: "qwerasdKDJFIEONqweriahsdfjasjdERRERqsfhgkop"
   myEmail: "tahyo27@gmail.com"
 
-  spring.mail.host=smtp.gmail.com
-  spring.mail.port=587
-  spring.mail.username=your-email@gmail.com
-  spring.mail.password=your-password
-  spring.mail.properties.mail.smtp.auth=true
-  spring.mail.properties.mail.smtp.starttls.enable=true
-  spring.mail.default-encoding=UTF-8

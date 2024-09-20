@@ -52,6 +52,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/posts")
                 .requestMatchers("/temp/image")
                 .requestMatchers("/temp/image/{filename}")
+                .requestMatchers("/sendmail")
                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
 
     }
@@ -61,7 +62,7 @@ public class WebSecurityConfig {
         httpSecurity
                 .csrf((auth) -> auth.disable())
                 .authorizeHttpRequests((authRequests) -> authRequests
-                        .requestMatchers("/auth/login", "/testmyblog", "/testmyblog2","/posts","/docs/index.html", "/posts/{postId}/comments", "/posts/{postId}").permitAll() //todo 테스트 용 주소들 나중에 삭제
+                        .requestMatchers("/auth/login", "/testmyblog", "/testmyblog2","/posts","/docs/index.html", "/posts/{postId}/comments", "/posts/{postId}" ).permitAll() //todo 테스트 용 주소들 나중에 삭제
                         .requestMatchers(HttpMethod.POST, "/auth/sign").permitAll()
                         .requestMatchers("/authTest").hasRole("ADMIN")
                         .anyRequest().authenticated()

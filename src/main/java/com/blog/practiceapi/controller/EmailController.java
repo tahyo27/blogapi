@@ -2,19 +2,22 @@ package com.blog.practiceapi.controller;
 
 import com.blog.practiceapi.request.EmailRequest;
 import com.blog.practiceapi.service.EmailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 public class EmailController {
 
     @Autowired
     private EmailService emailService;
 
-    @PostMapping("/send-email")
+    @PostMapping("/sendmail")
     public String sendEmail(@RequestBody EmailRequest emailRequest) {
+        log.info("이메일 >>>>>>>>>>>>>> 들어옴");
         // 이메일 전송 로직
         String mailAddress = "testbanchan7@gmail.com";
         String title = "요청사항 및 문의";
