@@ -11,7 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -33,11 +35,11 @@ public class EmailControllerTest {
     @Test
     public void testSendEmail() throws Exception {
         // EmailService의 sendSimpleMessage 메서드를 Mock으로 처리
-        doNothing().when(emailService).sendSimpleMessage("testbanchan7@gmail.com", "요청사항 및 문의", "테스트 메시지");
+        doNothing().when(emailService).sendSimpleMessage(anyString(), anyString(), anyString());
 
         // EmailRequest 객체 생성
         EmailRequest emailRequest = EmailRequest.builder()
-                .title("제목")
+                .email("asdf@asdfasdf")
                 .name("이름")
                 .message("들어갈 메세지입니다")
                 .build();

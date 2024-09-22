@@ -17,7 +17,7 @@ public class EmailController {
 
     @PostMapping("/sendmail")
     public String sendEmail(@RequestBody EmailRequest emailRequest) {
-        log.info("이메일 >>>>>>>>>>>>>> 들어옴");
+        log.info("이메일 >>>>>>>>>>>>>> 들어옴 {}", emailRequest);
         // 이메일 전송 로직
         String mailAddress = "testbanchan7@gmail.com";
         String title = "요청사항 및 문의";
