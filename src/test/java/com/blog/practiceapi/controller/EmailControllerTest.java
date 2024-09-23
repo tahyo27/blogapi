@@ -48,7 +48,7 @@ public class EmailControllerTest {
         String requestBody = objectMapper.writeValueAsString(emailRequest);
 
         // POST 요청을 보내고 응답 확인
-        mockMvc.perform(post("/sendmail")
+        mockMvc.perform(post("/mail/request")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
