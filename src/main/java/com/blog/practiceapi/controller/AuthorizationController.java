@@ -7,6 +7,8 @@ import com.blog.practiceapi.service.AuthorizationService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,8 +32,16 @@ public class AuthorizationController {
         return "테스트 주소";
     }
     @PostMapping("/auth/login")
-    public String login() {
-        return "로그인 페이지";
+    public ResponseEntity<String> login() {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        //todo 로그인 성공 어떻게 판단할건지 고민
+        if (!role.isEmpty()) {
+            return ResponseEntity.ok("로그인 성공!"); // 200 상태와 메세지 //todo 나중에 따로 분리하기
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않습니다."); // 401 상태와 메시지
+        }
     }
 
 

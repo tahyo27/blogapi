@@ -15,7 +15,7 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
 
-    @PostMapping("/sendmail")
+    @PostMapping("/mail/send")
     public String sendEmail(@RequestBody EmailRequest emailRequest) {
         log.info("이메일 >>>>>>>>>>>>>> 들어옴 {}", emailRequest);
         // 이메일 전송 로직
