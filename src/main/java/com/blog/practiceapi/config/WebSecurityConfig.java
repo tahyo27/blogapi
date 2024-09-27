@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,6 +22,9 @@ import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Slf4j
 @Configuration
@@ -58,7 +62,8 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf((auth) -> auth.disable())
+                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authRequests) -> authRequests
                         .requestMatchers("/auth/login", "/posts", "/docs/index.html", "/posts/{postId}/comments", "/posts/{postId}" ).permitAll() //todo 테스트 용 주소들 나중에 삭제
                         .requestMatchers(HttpMethod.POST, "/auth/sign").permitAll()
@@ -80,5 +85,18 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() { //암호화방식 SCrypt 사용
 
         return new SCryptPasswordEncoder(8, 8, 1, 32, 64);
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:5173"); // 허용할 Origin 설정
+        configuration.addAllowedMethod("*"); // 허용할 HTTP Method 설정
+        configuration.addAllowedHeader("*"); // 허용할 Header 설정
+        configuration.setAllowCredentials(true); // 자격 증명 허용 (필요시 설정)
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // CORS 설정 등록
+        return source;
     }
 }

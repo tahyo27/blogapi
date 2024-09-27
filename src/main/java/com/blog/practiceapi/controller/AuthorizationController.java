@@ -21,16 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthorizationController {
     private final AuthorizationService authorizationService;
     private final PostRepository postRepository;
-
-
-    @GetMapping("/authTest")
-    public String test() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-        log.info(">>>>>>>>>>>>>>>>>>>> username={}, >>> role={}", username, role);
-        
-        return "테스트 주소";
-    }
     @PostMapping("/auth/login")
     public ResponseEntity<String> login() {
 
