@@ -27,7 +27,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         log.info(">>>>>>>>>>>>>>>>>>>>>> jwt filter called");
         String auth = request.getHeader("Authorization");
-
+        
+        //일치 안하면
         if(auth == null || !auth.startsWith("Bearer ")) {
             filterChain.doFilter(request, response); // 다음 필터로 넘김
             return; //메서드 종료
