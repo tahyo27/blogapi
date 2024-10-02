@@ -19,7 +19,6 @@ public class ImageProcess {
     private List<ImageNameParser> imageList;
     private List<String> deletePath;
     private String content;
-    private final String replacedURL = "http://localhost:8072/temp/image/";
 
     public ImageProcess(String content) {
         this(content, new ArrayList<>());
@@ -39,11 +38,11 @@ public class ImageProcess {
         if (!images.isEmpty()) {
             for (Element image : images) {
                 String srcStr = image.attr("src");
-                if (srcStr.startsWith(replacedURL)) {
+                if (srcStr.startsWith(UrlConstants.replacedURL.getUrl())) {
                     ImageNameParser imageNameParser = new ImageNameParser(srcStr);
                     imageList.add(imageNameParser);
                     image.attr("src", imageNameParser.getGcsPath());
-                } else if (srcStr.startsWith("https://storage.googleapis.com/imgtest_bucket")) {
+                } else if (srcStr.startsWith(UrlConstants.gcsBucketURL.getUrl())) {
                     existList.add(srcStr);
                 }
             }

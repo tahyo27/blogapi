@@ -18,17 +18,15 @@ public class ImageNameParser {
     private final String gcsPath;
     private final String tempName;
     private final String extension;
+    public ImageNameParser(String src) { //todo 주소처리 나중에 서버에 올릴 때 로컬이니까 변경 필요
 
-    private final String replacedURL = "http://localhost:8072/temp/image/";
-    public ImageNameParser(String src) { //todo 주소처리 로컬이니까 변경 필요
-
-        String replacedName = src.replace(replacedURL, "");
+        String replacedName = src.replace(UrlConstants.replacedURL.getUrl(), "");
         String[] parts = replacedName.split("_", 2);
         String origin = parts[1];
         String fileExtension = origin != null && origin.contains(".") //확장자 추출
                 ? origin.substring(origin.lastIndexOf('.')) : "";
         String unique = parts[0] + fileExtension;
-        String path = "https://storage.googleapis.com/imgtest_bucket/" + unique;
+        String path = UrlConstants.gcsBucketURL.getUrl() + "/" + unique;
 
         this.extension = fileExtension;
         this.tempName = replacedName;

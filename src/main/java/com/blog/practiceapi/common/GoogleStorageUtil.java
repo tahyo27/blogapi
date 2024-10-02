@@ -23,8 +23,6 @@ public class GoogleStorageUtil {
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
 
-    private static final String GCS_URI_PREFIX = "https://storage.googleapis.com/";
-
     private final Storage storage;
 
     public boolean imgUpload(ImageNameParser imageNameParser) {
@@ -50,18 +48,18 @@ public class GoogleStorageUtil {
         } catch (IOException e) {
             log.info("테스트");
         }
-        return false; //임시
+        return false; //todo 임시 나중에 바꾸기
     }
 
-    public boolean imgDelete(String path) {
-        if(path == null) {
-            return false;
+    public void imgDelete(String path) {
+        if(path == null) { //null 이면 메서드 실행 종료
+            return; 
         }
-        String imgName = path.replace(GCS_URI_PREFIX + bucketName + "/", ""); //todo 유니크이름 도 가져와야할듯
+        String imgName = path.replace(UrlConstants.gcsPrefix.getUrl() + bucketName + "/", "");
         Blob blob = storage.get(bucketName, imgName);
         if (blob == null) {
             log.info(">>>>>>>>> 해당 이미지 파일 스토리지에 없음 {}", imgName);
-            return false;
+            return;
         }
         BlobId idWithGeneration = blob.getBlobId();
         log.info(">>>>>>>>>>>>>>>>>>>>>> idWithGeneration {}", idWithGeneration);
@@ -74,7 +72,6 @@ public class GoogleStorageUtil {
             log.warn(bucketName + "에서"  + path + "의 삭제가 실패했습니다" );
         }
 
-        return deleted;
     }
 
     private static String getContentType(ImageNameParser imageNameParser) {

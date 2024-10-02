@@ -25,9 +25,8 @@ public class AuthorizationController {
     @PostMapping("/auth/login")
     public ResponseEntity<String> login() {
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-        //todo 로그인 성공 어떻게 판단할건지 고민
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated()) { // null이 아니고 인증이 되어있는지
