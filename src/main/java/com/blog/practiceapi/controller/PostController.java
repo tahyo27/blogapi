@@ -74,7 +74,7 @@ public class PostController {
 
     @PostMapping("/temp/image")
     public ResponseEntity<?> imageTemp(MultipartFile file) { //에디터 이미지 임시저장
-        log.info("이미지 파일 테스트");
+        log.info("이미지 파일 들어옴");
         if(file.isEmpty()) { //파일 체크
             throw new InvalidFileException();
         } else if (file.getOriginalFilename() == null || file.getOriginalFilename().isEmpty()) {

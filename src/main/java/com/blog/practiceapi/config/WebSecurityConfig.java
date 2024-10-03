@@ -53,8 +53,6 @@ public class WebSecurityConfig {
                 .requestMatchers("/favicon.ico")
                 .requestMatchers("/error")
                 .requestMatchers("/", "/index")
-                .requestMatchers("/temp/image") // has롤 어드민으로 변경 필요
-                .requestMatchers("/temp/image/{filename}")
                 .requestMatchers("/mail/send")
                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
     }
@@ -66,6 +64,7 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authRequests) -> authRequests
                         .requestMatchers("/auth/login", "/posts", "/docs/index.html", "/posts/{postId}/comments", "/posts/{postId}" ).permitAll() //todo 테스트 용 주소들 나중에 삭제
+                        .requestMatchers("/temp/image", "/temp/image/{filename}").permitAll() //todo 나중에 admin으로 변경 필요
                         .requestMatchers(HttpMethod.POST, "/auth/sign").permitAll()
                         .requestMatchers("/authTest").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -90,7 +89,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:5173"); // 허용할 Origin 설정
+        configuration.addAllowedOrigin("http://localhost:5173/"); // 허용할 Origin 설정
         configuration.addAllowedMethod("*"); // 허용할 HTTP Method 설정
         configuration.addAllowedHeader("*"); // 허용할 Header 설정
         configuration.setAllowCredentials(true); // 자격 증명 허용 (필요시 설정)
