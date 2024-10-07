@@ -94,6 +94,9 @@ public class WebSecurityConfig {
         configuration.addAllowedHeader("*"); // 허용할 Header 설정
         configuration.setAllowCredentials(true); // 자격 증명 허용 (필요시 설정)
 
+        configuration.addExposedHeader("Authorization");
+        configuration.addExposedHeader("username");
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // CORS 설정 등록
         return source;

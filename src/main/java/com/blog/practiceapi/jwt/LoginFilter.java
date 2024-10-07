@@ -75,6 +75,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                 role, 1800L);
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>> jwtToken = {}", jwtToken);
         response.addHeader("Authorization", "Bearer " + jwtToken);
+        response.addHeader("username", username);
 
     }
 
